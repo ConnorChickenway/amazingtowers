@@ -1,0 +1,54 @@
+title: "&e&lTHETOWERS"
+pattern: "dd/MM/yy"
+
+scores:
+  # LOBBY
+  # VARIABLES
+  # %date% , %online_players% , %max_players% , %map%
+  lobby:
+    - "&7%date%"
+    - "&4"
+    - "Players: &a%online_players%/%max_players%"
+    - "&3"
+    - "&fWaiting..."
+    - "&2"
+    - "&fMap: &a%map%"
+    - "&1"
+    - "&ewww.example.org"
+
+  # PREGAME
+  # VARIABLES
+  # %date% , %online_players% , %max_players% , %seconds% ,
+  # %map%
+  starting:
+    - "&7%date%"
+    - "&4"
+    - "&fPlayers: &a%online_players%/%max_players%"
+    - "&3"
+    - "&fStarting in &a%seconds%s"
+    - "&2"
+    - "&fMap: &a%map%"
+    - "&1"
+    - "&ewww.example.org"
+
+  # GAME
+  # VARIABLES
+  # %date% , %online_players% , %max_players% ,  %points_blue% ,
+  # %points_red% , %max_points% , %player_kills%,
+  # %player_deaths% , %refill_time%, %map%
+  game:
+    - "&7%date%"
+    - "&f"
+    - "&fNext Refill:"
+    - "&a%refill_time%"
+    - "&f"
+    - "&f->&c&lR &fRed: &c%points_red%"
+    - "&f->&9&lB &fBlue: &9%points_blue%"
+    - "&f"
+    - "&7Score &a%maxPointsWin% &7points to Win!"
+    - "&f"
+    - "&fKills: &a%player_kills%"
+    - "&f"
+    - "&fMap: &a%map%"
+    - "&8"
+    - "&ewww.example.org"

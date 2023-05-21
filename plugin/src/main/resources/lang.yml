@@ -1,0 +1,24 @@
+#Some messages will not work if the plugin is in Bungee-Mode
+join_arena: '&a%player% &7joined the game (&a%online_players%&7/&a%max_players%&7)'
+leave_arena: '&c%player% &7leave the game (&c%online_players%&7/&c%max_players%&7)'
+arena_full: '&cThe arena is full!'
+arena_finish: '&cThe arena is finished!'
+necessary_players: "&aThe countdown has been cancelled, because the minimum number of players is lower!"
+game_start: '&eThe game starts in &c%count% &e%seconds%!'
+seconds: 'second::seconds'
+unbalenced_team: "&cYou cannot join this team because it's unbalanced"
+already_team: "&cYou're already on %color_team%%team_name% TEAM!"
+already_game: "&cYou're already on a game!"
+point_scored:
+  - ''
+  - '{center}%color_team%&l♦  %color_team%%player_name% &7scored point for %color_team%&l%team_name%!  %color_team%&l♦'
+  - ''
+win:
+  - ''
+  - '{center}%color_team%&l%team_name% Team has won the game!'
+  - ''
+death:
+  by_player: '%player_name% &7was slain by %killer_name%'
+  by_projectile: '%player_name% &7was shot by %killer_name% &7from &e%distance% blocks'
+  by_unknown: '%player_name% &7died.'
+join_team: 'You joined %color_team%%team_name% TEAM!'

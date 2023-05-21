@@ -1,0 +1,47 @@
+team_name:
+  red: 'RED'
+  blue: 'BLUE'
+chat:
+  #Do you want to enable this option?
+  enabled: true
+  global_prefix: '!'
+  format:
+    normal_chat: '%prefix% &f%player% &8: &f%msg%'
+    team_chat: '%color_team%&l[%team_name%] %prefix% &f%player% &8: &f%msg%'
+    global_chat: '%color_team%&l[GLOBAL] %prefix% &f%player% &7: &f%msg%'
+#this option is for prevent drop armor
+drop_leather_armor: false
+instant_respawn: true
+#options:
+# MULTI_ARENA
+# BUNGEE_MODE
+game_mode: MULTI_ARENA
+options:
+  multiarena:
+    spawn:
+    sign:
+      attached:
+        #WOOL; TERRACOTTA, STAINED_GLASS
+        material: 'STAINED_GLASS'
+        color:
+          lobby: 'GREEN'
+          starting: 'YELLOW'
+          game: 'RED'
+          finish: 'PURPLE'
+          reloading: 'BLACK'
+      status:
+        lobby: '&aWaiting'
+        starting: '&eStarting'
+        game: '&cIn-Game'
+        finish: '&5Finish'
+        reload: '&0Reloading'
+      lines:
+      - '&lTheTowers' 
+      - '%status%'
+      - '&nMap: %map%'
+      - '&7%online_players%/%max_players%'
+
+  bungeemode:
+    server_name: 'towers_lobby'
+
+    
