@@ -2,16 +2,12 @@ package xyz.connorchickenway.towers.game.scoreboard.score;
 
 import java.util.List;
 
-import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
-import xyz.connorchickenway.towers.game.scoreboard.manager.ScoreboardManager;
 import xyz.connorchickenway.towers.game.scoreboard.placeholder.PlaceholderKey;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
 public class Line 
 {
-
-    private static ScoreboardManager scoreboardManager = AmazingTowers.getInstance().getScoreboardManager();
 
     private String text;
     private List<PlaceholderKey> keys;
@@ -31,7 +27,7 @@ public class Line
     {
         String text = this.text;
         for ( PlaceholderKey key : keys )
-            text = text.replaceAll( key.toString() , scoreboardManager.get( key ).getPlaceholder( gPlayer ) );
+            text = text.replaceAll( key.toString() , key.perform( gPlayer ) );
         return text;
     }
 

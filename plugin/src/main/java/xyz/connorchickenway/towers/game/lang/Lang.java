@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 
 import xyz.connorchickenway.towers.config.ConfigurationManager.ConfigName;
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
-import xyz.connorchickenway.towers.game.lang.placeholder.Placeholder;
 import xyz.connorchickenway.towers.game.lang.utils.MessageUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
@@ -49,7 +48,7 @@ public enum Lang
         this.sendLang( player, null );
     }
 
-    public void sendLang( Player player, Map<String, Placeholder<?>> placeholders )
+    public void sendLang( Player player, Map<String, String> placeholders )
     {
         String[] text = this.getMessage( placeholders );
         player.sendMessage( text );
@@ -60,13 +59,13 @@ public enum Lang
         this.sendLang( collection, null );
     }
 
-    public void sendLang( Collection<GamePlayer> collection, Map<String, Placeholder<?>> placeholders )
+    public void sendLang( Collection<GamePlayer> collection, Map<String, String> placeholders )
     {
         String[] text = this.getMessage( placeholders );
         collection.forEach( player -> player.sendMessage( text ) );
     }
 
-    private String[] getMessage( Map<String, Placeholder<?>> placeholders )
+    private String[] getMessage( Map<String, String> placeholders )
     {
         StringBuilder b = new StringBuilder();
         String[] text = this.get();
@@ -81,10 +80,10 @@ public enum Lang
                     Matcher m = StringUtils.PLACEHOLDER_PATTERN.matcher( f );
                     while( m.find() )
                     {
-                        Placeholder<?> placeholder = placeholders.get( m.group() );
-                        if ( placeholder == null ) continue;
-                        f = f.replaceAll( Pattern.quote( placeholder.getKey() ),
-                                Matcher.quoteReplacement( placeholder.getValue() ) );
+                        String value = placeholders.get( m.group() );
+                        if ( value == null ) continue;
+                        f = f.replaceAll( Pattern.quote( m.group() ),
+                                Matcher.quoteReplacement( value ) );
                     }
                 }
                 Matcher center = StringUtils.CENTER_PATTERN.matcher( f );

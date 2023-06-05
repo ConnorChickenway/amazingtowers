@@ -1,8 +1,8 @@
 package xyz.connorchickenway.towers.game.entity.manager;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,7 +28,7 @@ public class EntityManager extends ManagerController implements Listener
     @Override
     public void load()
     {
-        players = new HashMap<>();
+        players = new ConcurrentHashMap<>();
         plugin.getServer().getPluginManager().registerEvents( this , plugin );
     }
 

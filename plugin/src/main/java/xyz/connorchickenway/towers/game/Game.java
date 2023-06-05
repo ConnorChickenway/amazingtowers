@@ -23,16 +23,7 @@ import xyz.connorchickenway.towers.game.entity.GamePlayer;
 import xyz.connorchickenway.towers.game.entity.inventory.InventorySession;
 import xyz.connorchickenway.towers.game.kit.AbstractKit;
 import xyz.connorchickenway.towers.game.lang.Lang;
-import xyz.connorchickenway.towers.game.lang.placeholder.ColorTeamPlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.CountPlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.DistanceProjectilePlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.KillerNamePlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.MaxPlayersPlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.OnlinePlayersPlaceholder;
 import xyz.connorchickenway.towers.game.lang.placeholder.Placeholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.PlayerNamePlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.SecondsPlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.TeamNamePlaceholder;
 import xyz.connorchickenway.towers.game.runnable.GameCountdown;
 import xyz.connorchickenway.towers.game.runnable.GameRunnable;
 import xyz.connorchickenway.towers.game.runnable.GameTask;
@@ -46,7 +37,7 @@ import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
-import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.builder;
+import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.*;
 
 public class Game
 {
@@ -67,7 +58,7 @@ public class Game
     private Game( String gameName )
     {
         this.gameName = gameName;
-        this.players = Sets.newHashSet();
+        this.players = Sets.newConcurrentHashSet();
         this.taskMap = Maps.newHashMap();
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         this.gameWorld = new GameWorld( gameName );
@@ -90,9 +81,9 @@ public class Game
         player.setScoreboard( scoreboard );
         gameScoreboard.add( gamePlayer );
         message( Lang.JOIN_ARENA,
-                builder( PlayerNamePlaceholder.newInstance( player, null ),
-                        OnlinePlayersPlaceholder.newInstance( players.size() ),
-                        MaxPlayersPlaceholder.newInstance( maxPlayers ) ) );
+                builder( pair( PLAYER_NAME, player.getName() ),
+                        pair( ONLINE_PLAYERS , players.size() ),
+                        pair( MAX_PLAYERS, maxPlayers ) ) );
         InventorySession iSession = gamePlayer.getInventorySession();
         if ( iSession != null )
             iSession.save();
@@ -102,7 +93,7 @@ public class Game
         {
             
             case LOBBY: 
-                gameScoreboard.update( state ); 
+                updateScoreboard();
                 if ( players.size() >= maxPlayers )
                     startArena();   
                 break;
@@ -135,15 +126,15 @@ public class Game
         gameScoreboard.remove( gamePlayer );
         if ( leaveMessage )
             message( Lang.LEAVE_ARENA, builder( 
-                PlayerNamePlaceholder.newInstance( gamePlayer.toBukkitPlayer(), null ),
-                OnlinePlayersPlaceholder.newInstance( players.size() ),
-                MaxPlayersPlaceholder.newInstance( maxPlayers ) ) );
+                pair( PLAYER_NAME, gamePlayer.toBukkitPlayer(), null ),
+                pair( ONLINE_PLAYERS, players.size() ) ,
+                pair( MAX_PLAYERS, maxPlayers ) ) );
         switch( state )
         {
             
             case STARTING: case LOBBY:
                 if ( state == GameState.LOBBY )
-                    gameScoreboard.update( state );
+                   updateScoreboard();
                 if ( isStarting() )
                 {
                     if ( players.size() < minPlayers )
@@ -209,9 +200,9 @@ public class Game
             {
                 message( Lang.GAME_START, 
                     Placeholder.builder(
-                        CountPlaceholder.newInstance( this.getSeconds() ),
-                        SecondsPlaceholder.newInstance( this.getSeconds() ) ) );
-                gameScoreboard.update( state );        
+                        pair( COUNT ,  this.getSeconds() ),
+                        pair( SECONDS , this.getSeconds() ) ) );
+                updateScoreboard();        
             }
 
         } );
@@ -239,7 +230,7 @@ public class Game
                 //GENERATORS
                 generators();
                 //SCOREBOARD
-                gameScoreboard.update( state );
+                updateScoreboard();
             }
         } );
         if ( gameSign != null )
@@ -283,8 +274,9 @@ public class Game
         if ( gRunnable != null )
             gRunnable.cancel();
         message( Lang.WIN_FOR_TEAM, 
-            builder( ColorTeamPlaceholder.newInstance( team.getChatColor() ),
-                     TeamNamePlaceholder.newInstance( team.getTeamName() ) ) );
+            builder( 
+                pair( COLOR_TEAM , team.getChatColor() ),
+                pair( TEAM_NAME, team.getConfigName() ) ) );
         gRunnable = taskMap.get( TaskId.FINISH_TASK );
         if ( gRunnable != null )
             gRunnable.startTimer();
@@ -364,21 +356,26 @@ public class Game
             if ( player.getLastDamageCause().getCause() == DamageCause.PROJECTILE )
             {
                 message( Lang.DEATH_BY_PROJECTILE ,  builder(
-                    PlayerNamePlaceholder.newInstance( player, getChatColor( player ) ),
-                    KillerNamePlaceholder.newInstance( killer, getChatColor( killer ) ), 
-                    DistanceProjectilePlaceholder.newInstance( player ) ) );
+                    pair( PLAYER_NAME , player, getChatColor( player ) ),
+                    pair( KILLER_NAME ,  killer, getChatColor( killer ) ), 
+                    pair( DISTANCE , player ) ) );
             }
             else 
                 message( Lang.DEATH_BY_PLAYER ,  builder(
-                    PlayerNamePlaceholder.newInstance( player, getChatColor( player ) ),
-                    KillerNamePlaceholder.newInstance( killer, getChatColor( killer ) )
+                    pair( PLAYER_NAME , player, getChatColor( player ) ),
+                    pair( KILLER_NAME ,  killer, getChatColor( killer ) )
                 ) );
 
             return;
         }
         message( Lang.DEATH_BY_UNKNOWN, builder(  
-                PlayerNamePlaceholder.newInstance( player, getChatColor( player ) )    
+                pair( PLAYER_NAME , player, getChatColor( player ) )   
             ) );
+    }
+
+    public void updateScoreboard()
+    {
+        gameScoreboard.update( this.state );
     }
 
     private boolean isStarting()
@@ -417,7 +414,7 @@ public class Game
         return false;
     }
 
-    public void message( Lang lang, Map<String, Placeholder<?>> placeholderMap )
+    public void message( Lang lang, Map<String, String> placeholderMap )
     {
         lang.sendLang( players, placeholderMap );
     }

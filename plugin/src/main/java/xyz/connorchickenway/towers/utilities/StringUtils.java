@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 
-import xyz.connorchickenway.towers.game.lang.placeholder.Placeholder;
-
 public class StringUtils
 {
 
@@ -19,7 +17,7 @@ public class StringUtils
         return ChatColor.translateAlternateColorCodes( '&', text );
     }
 
-    public static String replacePlaceholders( String text, Map<String, Placeholder<?>> placeholders )
+    public static String replacePlaceholders( String text, Map<String, String> placeholders )
     {
         StringBuilder builder = new StringBuilder();
         String t = text;
@@ -31,10 +29,10 @@ public class StringUtils
                 Matcher m = PLACEHOLDER_PATTERN.matcher( t );
                 while( m.find() )
                 {
-                    Placeholder<?> placeholder = placeholders.get( m.group() );
-                    if ( placeholder == null ) continue;
-                    t = t.replace( Pattern.quote( placeholder.getKey() ),
-                            Matcher.quoteReplacement( placeholder.getValue() ) );
+                    String value = placeholders.get( m.group() );
+                    if ( value == null ) continue;
+                    t = t.replace( Pattern.quote( m.group() ),
+                            Matcher.quoteReplacement( value ) );
                 }
             }
         }

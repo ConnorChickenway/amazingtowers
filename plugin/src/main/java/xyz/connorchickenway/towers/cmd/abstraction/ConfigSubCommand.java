@@ -2,6 +2,7 @@ package xyz.connorchickenway.towers.cmd.abstraction;
 
 import org.bukkit.command.CommandSender;
 
+import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.cmd.AbstractCommand;
 import xyz.connorchickenway.towers.config.ConfigurationManager.ConfigName;
 import xyz.connorchickenway.towers.utilities.StringUtils;
@@ -23,6 +24,8 @@ public class ConfigSubCommand extends AbstractCommand
             if ( config != null )
             {
                 config.getConfiguration().loadConfiguration();
+                if ( config == ConfigName.SCOREBOARD )
+                    AmazingTowers.getInstance().getScoreboardManager().load();
                 sender.sendMessage( StringUtils.color( "&aConfig " + config.getName() + " has been reloaded!." ) );
                 return CommandReason.OK;
             }

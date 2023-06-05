@@ -8,8 +8,6 @@ import com.google.common.collect.Maps;
 import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.config.ConfigurationManager.ConfigName;
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
-import xyz.connorchickenway.towers.game.scoreboard.placeholder.Placeholder;
-import xyz.connorchickenway.towers.game.scoreboard.placeholder.PlaceholderKey;
 import xyz.connorchickenway.towers.game.scoreboard.score.Line;
 import xyz.connorchickenway.towers.game.state.GameState;
 import xyz.connorchickenway.towers.utilities.ManagerController;
@@ -24,7 +22,6 @@ public class ScoreboardManager extends ManagerController
 {
 
     private Map<GameState, List<Line>> linesMap;
-    private Map<PlaceholderKey, Placeholder> placeholders;
     private String title, 
                 date;
 
@@ -32,7 +29,6 @@ public class ScoreboardManager extends ManagerController
     {
         super( plugin );
         this.linesMap = Maps.newHashMap();
-        this.placeholders = Maps.newHashMap();
     }
 
     @Override
@@ -41,15 +37,6 @@ public class ScoreboardManager extends ManagerController
         FileConfiguration fc = ConfigName.SCOREBOARD.getConfiguration().getFileConfiguration();
         title = StringUtils.color( fc.getString( "title" , "&e&lTHETOWERS" ) );
         date = new SimpleDateFormat( fc.getString( "pattern", "dd/MM/yy" ) ).format( Calendar.getInstance().getTime() );
-        //PLACEHOLDERS
-        add( PlaceholderKey.DATE, gPlayer -> { return this.getDate();} );
-        add( PlaceholderKey.ONLINE_PLAYERS , gPlayer -> String.valueOf( gPlayer.getGame().getOnlinePlayers() ) );
-        add( PlaceholderKey.MAX_PLAYERS , gPlayer -> String.valueOf( gPlayer.getGame().getMaxPlayers() ) );
-        add( PlaceholderKey.MAP , gPlayer  -> gPlayer.getGame().getGameName() );
-        add( PlaceholderKey.SECONDS, gPlayer  -> String.valueOf( gPlayer.getGame().getCount() ) );
-        add( PlaceholderKey.POINTS_BLUE, gPlayer -> String.valueOf( gPlayer.getGame().getBlue().getPoints() ) );
-        add( PlaceholderKey.POINTS_RED, gPlayer -> String.valueOf( gPlayer.getGame().getRed().getPoints() ) );
-        add( PlaceholderKey.MAX_POINTS, gPlayer -> String.valueOf( gPlayer.getGame().getMaxPoints() ) );
         //LINES
         GameState[] states = GameState.values();
         for( int i = 0; i < 3; i++ )
@@ -60,11 +47,6 @@ public class ScoreboardManager extends ManagerController
                 list.add( new Line( line ) );
             linesMap.put( state , list );
         }
-    }
-
-    private void add( PlaceholderKey placeholderKey, Placeholder placeholder )
-    {
-        placeholders.put( placeholderKey , placeholder );
     }
 
     @Override
@@ -84,11 +66,6 @@ public class ScoreboardManager extends ManagerController
         return date;
     }
     
-    public Placeholder get( PlaceholderKey placeholderKey )
-    {
-        return placeholders.get( placeholderKey );
-    }
-
     public List<Line> getLines( GameState state )
     {
         return linesMap.get( state );

@@ -20,16 +20,12 @@ import com.google.common.collect.Sets;
 import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.Game;
 import xyz.connorchickenway.towers.game.lang.Lang;
-import xyz.connorchickenway.towers.game.lang.placeholder.ColorTeamPlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.MessagePlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.PlayerNamePlaceholder;
-import xyz.connorchickenway.towers.game.lang.placeholder.TeamNamePlaceholder;
 import xyz.connorchickenway.towers.game.state.GameState;
 import xyz.connorchickenway.towers.utilities.Cuboid;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
-import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.builder;
+import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.*;
 
 public class Team
 {
@@ -66,9 +62,10 @@ public class Team
         ++points;
         spawn.teleport( player );
         game.message( Lang.getLang( "point_scored" ),
-                builder( PlayerNamePlaceholder.newInstance( player, chatColor ),
-                        ColorTeamPlaceholder.newInstance( chatColor ),
-                        TeamNamePlaceholder.newInstance( teamName ) ) );
+                builder( 
+                    pair( PLAYER_NAME , player, chatColor ),
+                    pair( COLOR_TEAM, chatColor ),
+                    pair( TEAM_NAME , teamName ) ) );
         if ( points >= 10 ) game.finishArena( this );
     }
 
@@ -87,8 +84,8 @@ public class Team
         players.add( player.getUniqueId() );
         Lang.JOIN_TEAM.sendLang( player, 
             builder( 
-                TeamNamePlaceholder.newInstance( teamName ),
-                ColorTeamPlaceholder.newInstance( chatColor )
+                pair( TEAM_NAME, configName ),
+                pair( COLOR_TEAM, chatColor )
              ) );
         if ( game.isState( GameState.GAME ) ) doStuff( player );
     }
@@ -111,9 +108,10 @@ public class Team
     public void message( Player player, String message )
     {
         String format = StringUtils.replacePlaceholders( StaticConfiguration.team_format, 
-            builder( ColorTeamPlaceholder.newInstance( chatColor ), 
-                    TeamNamePlaceholder.newInstance( configName ), 
-                    MessagePlaceholder.newInstance( message ) ) );
+            builder( 
+                pair( COLOR_TEAM , chatColor ), 
+                pair( TEAM_NAME , configName ), 
+                pair( MESSAGE , message ) ) );
         this.getOnlinePlayers().forEach( online -> online.sendMessage( format ) );
     }
 
@@ -213,6 +211,11 @@ public class Team
     public void setConfigName( String configName )
     {
         this.configName = configName;
+    }
+    
+    public String getConfigName()
+    {
+        return configName;
     }
 
     public void setSpawnLocation( Location spawn )

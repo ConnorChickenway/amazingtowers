@@ -45,7 +45,7 @@ scores:
     - "&f->&c&lR &fRed: &c%points_red%"
     - "&f->&9&lB &fBlue: &9%points_blue%"
     - "&f"
-    - "&7Score &a%maxPointsWin% &7points to Win!"
+    - "&7Score &a%max_points% &7points to Win!"
     - "&f"
     - "&fKills: &a%player_kills%"
     - "&f"
