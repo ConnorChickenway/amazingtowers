@@ -1,29 +1,28 @@
 package xyz.connorchickenway.towers.game.entity.inventory;
 
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import xyz.connorchickenway.towers.game.entity.GamePlayer;
+
 public class InventorySession 
 {
     
-    private final UUID id;
+    private final GamePlayer gamePlayer;
 
     private ItemStack[] armorContents, contents;
     private double health;
     private int food;
 
-    public InventorySession( UUID uuid )
+    public InventorySession( GamePlayer gamePlayer )
     {
-        this.id = uuid;
+        this.gamePlayer = gamePlayer;
     }
 
     public void save()
     {
-        Player player = Bukkit.getPlayer( id );
+        Player player = gamePlayer.toBukkitPlayer();
         PlayerInventory playerInventory = player.getInventory();
         this.armorContents = playerInventory.getArmorContents();
         this.contents = playerInventory.getContents();
@@ -33,7 +32,7 @@ public class InventorySession
 
     public void load()
     {
-        Player player = Bukkit.getPlayer( id );
+        Player player = gamePlayer.toBukkitPlayer();
         PlayerInventory pInventory = player.getInventory();
         pInventory.clear();
         pInventory.setArmorContents( armorContents );

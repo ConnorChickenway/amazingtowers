@@ -42,7 +42,7 @@ public class EntityManager extends ManagerController implements Listener
     public void onJoin( PlayerJoinEvent event )
     {
         Player player = event.getPlayer();
-        players.put( player.getUniqueId() , GamePlayer.create( player.getUniqueId() ) );
+        players.put( player.getUniqueId() , GamePlayer.create( player ) );
     }
 
     @EventHandler( priority = EventPriority.LOWEST )

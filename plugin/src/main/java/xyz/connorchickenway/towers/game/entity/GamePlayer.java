@@ -2,7 +2,6 @@ package xyz.connorchickenway.towers.game.entity;
 
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -13,40 +12,40 @@ import xyz.connorchickenway.towers.utilities.GameMode;
 public class GamePlayer 
 {
 
-    private final UUID id;
+    private final Player player;
     private InventorySession inventorySession;
     private Game game;
 
-    private GamePlayer( UUID id )
+    private GamePlayer( Player player )
     {
-        this.id = id;
+        this.player = player;
         if ( GameMode.isMultiArena() )
-            this.inventorySession = new InventorySession( id );
+            this.inventorySession = new InventorySession( this );
     }
     
     public Location getLocation()
     {
-        return toBukkitPlayer().getLocation();
+        return player.getLocation();
     }
 
     public void sendMessage( String text )
     {
-        toBukkitPlayer().sendMessage( text );
+        player.sendMessage( text );
     }
 
     public void sendMessage( String... text )
     {
-        toBukkitPlayer().sendMessage( text );
+        player.sendMessage( text );
     }
 
     public UUID getUniqueId()
     {
-        return id;
+        return player.getUniqueId();
     }    
 
     public Player toBukkitPlayer()
     {
-        return Bukkit.getPlayer( this.id );
+        return player;
     }
 
     public void setGame( Game game )
@@ -69,9 +68,9 @@ public class GamePlayer
         return inventorySession;
     }
 
-    public static GamePlayer create( UUID uuid )
+    public static GamePlayer create( Player player )
     {
-        return new GamePlayer( uuid );
+        return new GamePlayer( player );
     }
 
 }
