@@ -12,18 +12,18 @@ import xyz.connorchickenway.towers.utilities.StringUtils;
 public enum PlaceholderKey 
 {
     
-    DATE( ( gPlayer ) -> AmazingTowers.getInstance().getScoreboardManager().getDate() ), 
-    ONLINE_PLAYERS( ( gPlayer ) -> String.valueOf( gPlayer.getGame().getOnlinePlayers() ) ), 
-    MAX_PLAYERS( ( gPlayer ) -> String.valueOf( gPlayer.getGame().getMaxPlayers() ) ), 
-    MAP( ( gPlayer ) -> gPlayer.getGame().getGameName() ), 
-    SECONDS( ( gPlayer ) -> String.valueOf( gPlayer.getGame().getCount() ) ),
-    POINTS_BLUE( ( gPlayer ) -> String.valueOf( gPlayer.getGame().getBlue().getPoints() ) ),
-    POINTS_RED( ( gPlayer ) -> String.valueOf( gPlayer.getGame().getRed().getPoints() ) ),
-    MAX_POINTS( ( gPlayer ) -> String.valueOf( gPlayer.getGame().getMaxPoints() ) );
+    DATE( gPlayer  -> AmazingTowers.getInstance().getScoreboardManager().getDate() ), 
+    ONLINE_PLAYERS( gPlayer -> gPlayer.getGame().getOnlinePlayers() ), 
+    MAX_PLAYERS( gPlayer -> gPlayer.getGame().getMaxPlayers() ), 
+    MAP( gPlayer -> gPlayer.getGame().getGameName() ), 
+    SECONDS( gPlayer -> gPlayer.getGame().getCount() ),
+    POINTS_BLUE( gPlayer -> gPlayer.getGame().getBlue().getPoints() ),
+    POINTS_RED( gPlayer -> gPlayer.getGame().getRed().getPoints() ),
+    MAX_POINTS( gPlayer -> gPlayer.getGame().getMaxPoints() );
 
-    private Function<GamePlayer, String> function;
+    private Function<GamePlayer, Object> function;
 
-    private PlaceholderKey( Function<GamePlayer, String> function )
+    private PlaceholderKey( Function<GamePlayer, Object> function )
     {
         this.function = function;
     }
@@ -51,7 +51,7 @@ public enum PlaceholderKey
 
     public String perform( GamePlayer obj )
     {
-        return function.apply( obj );
+        return String.valueOf( function.apply( obj ) );
     }
 
 }
