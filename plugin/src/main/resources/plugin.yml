@@ -1,7 +1,8 @@
 name: AmazingTowers
 version: 1.0
 author: ConnorChickenway
-main: xyz.connorchickenway.towers.Main
+main: xyz.connorchickenway.towers.AmazingTowers
 api-version: 1.13
 commands:
+  towers:
   
