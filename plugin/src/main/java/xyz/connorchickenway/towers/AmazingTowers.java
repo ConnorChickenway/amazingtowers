@@ -2,6 +2,9 @@ package xyz.connorchickenway.towers;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import xyz.connorchickenway.towers.cmd.CommandManager;
 import xyz.connorchickenway.towers.config.ConfigurationManager;
 import xyz.connorchickenway.towers.game.entity.manager.EntityManager;
@@ -78,5 +81,9 @@ public class AmazingTowers extends JavaPlugin
 
     private static AmazingTowers instance;
 
+    public static Gson GSON = new GsonBuilder()
+            .disableHtmlEscaping()
+            .setPrettyPrinting()
+            .create();
 
 }
