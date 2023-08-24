@@ -3,15 +3,18 @@ package xyz.connorchickenway.towers.game.builder;
 import xyz.connorchickenway.towers.game.Game;
 import xyz.connorchickenway.towers.game.kit.AbstractKit;
 import xyz.connorchickenway.towers.game.kit.DefaultKit;
+import xyz.connorchickenway.towers.utilities.Cuboid;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
 public class GameBuilder 
 {
 
     private String name;
-    private Location lobby, ironGenerator, expGenerator;
+    private Location lobby, ironGenerator, expGenerator,
+        blueSpawn, redSpawn;
     private int minPlayers, maxPlayers, count, maxPoints;
     private AbstractKit abstractKit;
+    private Cuboid redPool, bluePool;
 
     private GameBuilder(){}
 
@@ -56,6 +59,16 @@ public class GameBuilder
         this.maxPlayers = maxPlayers;
     }
     
+    public void setBlueSpawn( Location blueSpawn )
+    {
+        this.blueSpawn = blueSpawn;
+    }
+    
+    public void setRedSpawn( Location redSpawn )
+    {
+        this.redSpawn = redSpawn;
+    }
+    
     public int getMaxPlayers()
     {
         return maxPlayers;
@@ -81,10 +94,19 @@ public class GameBuilder
         return maxPoints;
     }
 
-
     public void setAbstractKit( AbstractKit abstractKit )
     {
         this.abstractKit = abstractKit;
+    }
+    
+    public void setBluePool( Cuboid bluePool )
+    {
+        this.bluePool = bluePool;
+    }
+    
+    public void setRedPool( Cuboid redPool )
+    {
+        this.redPool = redPool;
     }
 
     public boolean hasName()
@@ -132,6 +154,16 @@ public class GameBuilder
         return abstractKit != null;
     }
 
+    public boolean hasRedPool()
+    {
+        return redPool != null;
+    }
+
+    public boolean hasBluePool()
+    {
+        return bluePool != null;
+    }
+
     public Game build()
     {
         Game game = Game.newInstance( name );
@@ -143,6 +175,10 @@ public class GameBuilder
         game.setMaxPlayers( maxPlayers );
         game.setCount( count );
         game.setMaxPoints( maxPoints );
+        game.getRed().setPool( redPool );
+        game.getRed().setSpawnLocation( redSpawn );
+        game.getBlue().setPool( bluePool );
+        game.getBlue().setSpawnLocation( blueSpawn );
         return game;
     }
 
