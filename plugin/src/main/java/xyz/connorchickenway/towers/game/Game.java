@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +14,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.google.common.collect.Maps;
@@ -35,6 +38,8 @@ import xyz.connorchickenway.towers.game.team.Team;
 import xyz.connorchickenway.towers.game.world.GameWorld;
 import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.GameMode;
+import xyz.connorchickenway.towers.utilities.ItemUtils;
+import xyz.connorchickenway.towers.utilities.StringUtils;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
 import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.*;
@@ -134,7 +139,7 @@ public class Game
             
             case STARTING: case LOBBY:
                 if ( state == GameState.LOBBY )
-                   updateScoreboard();
+                    updateScoreboard();
                 if ( isStarting() )
                 {
                     if ( players.size() < minPlayers )
@@ -371,6 +376,41 @@ public class Game
         message( Lang.DEATH_BY_UNKNOWN, builder(  
                 pair( PLAYER_NAME , player, getChatColor( player ) )   
             ) );
+        if ( StaticConfiguration.drop_armor )
+            for ( ItemStack itemStack : event.getDrops() )
+                if ( ItemUtils.isArmorLeather( itemStack.getType() ) )
+                    itemStack.setType( Material.AIR );
+        if ( StaticConfiguration.instant_respawn )
+            player.spigot().respawn();      
+    }
+
+    public void chat( AsyncPlayerChatEvent event )
+    {
+        event.setCancelled( true );
+        Player player = event.getPlayer();
+        final String playerName = player.getName(),
+            eventMsg = event.getMessage();
+        AtomicReference<String> message = new AtomicReference<String>( "" ); 
+        if ( state == GameState.LOBBY || state == GameState.STARTING || !hasTeam( player.getUniqueId() ) )
+        {
+            message.set( StringUtils.replacePlaceholders( StaticConfiguration.normal_format, 
+                builder( 
+                    pair( PLAYER_NAME, playerName ),
+                    pair( MESSAGE, eventMsg )
+                ) ) );
+            players.forEach( gPlayer -> gPlayer.sendMessage( message.get() ) );    
+            return;    
+        }   
+        Team team = getTeam( player.getUniqueId() );
+        message.set( StringUtils.replacePlaceholders( StaticConfiguration.team_format, 
+            builder( 
+                pair( PLAYER_NAME, playerName ),
+                pair( MESSAGE, eventMsg ),
+                pair( COLOR_TEAM, getChatColor( player ) ),
+                pair( TEAM_NAME, team.getConfigName() )
+            )
+        ) );
+        team.getOnlinePlayers().forEach( pl -> pl.sendMessage( message.get() ) );
     }
 
     public void updateScoreboard()
