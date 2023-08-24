@@ -2,6 +2,8 @@ allprojects {
     apply plugin: 'java'
     sourceCompatibility = 1.8
 	targetCompatibility = 1.8
+	version = 1.0
+	group = "xyz.connorchickenway"
 	repositories {
         mavenCentral()
 		maven {

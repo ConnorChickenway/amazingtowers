@@ -4,9 +4,16 @@ plugins
 }
 dependencies {
   compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT' 
+  implementation project(':nms_interface')
   implementation project(':nms_1_8_R3')
   implementation project(':nms_1_12_R1')
   implementation project(':nms_latest')
 } 
+
+shadowJar {
+  archiveBaseName.set('AmazingTowers')
+  archiveClassifier.set('')
+  archiveVersion.set('')
+}
 
 apply plugin: 'com.github.johnrengelman.shadow'
