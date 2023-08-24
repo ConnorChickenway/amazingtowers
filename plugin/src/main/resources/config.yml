@@ -6,9 +6,9 @@ chat:
   enabled: true
   global_prefix: '!'
   format:
-    normal_chat: '%prefix% &f%player% &8: &f%msg%'
-    team_chat: '%color_team%&l[%team_name%] %prefix% &f%player% &8: &f%msg%'
-    global_chat: '%color_team%&l[GLOBAL] %prefix% &f%player% &7: &f%msg%'
+    normal_chat: '%prefix% &f%player_name% &8: &f%msg%'
+    team_chat: '%color_team%&l[%team_name%] %prefix% &f%player_name% &8: &f%msg%'
+    global_chat: '%color_team%&l[GLOBAL] %prefix% &f%player_name% &7: &f%msg%'
 #this option is for prevent drop armor
 drop_leather_armor: false
 instant_respawn: true
