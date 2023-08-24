@@ -21,29 +21,36 @@ public abstract class AbstractKit
     {
         this.contents = new HashMap<>();
         this.armor = new ItemStack[4];
-        this.load();
     }
 
-    public abstract void load();
+    /**
+     * @return true if function loads without error.
+     */
+    public abstract boolean load();
 
+    /**
+     * Sends a kit to Player
+     * @param player 
+     * @param color 
+     */
     public void sendKit( Player player, Color color ) 
     {
         PlayerInventory inventory = player.getInventory();
         inventory.clear();
         contents.entrySet().forEach( e -> inventory.setItem( e.getKey(), e.getValue() ) );
-        ItemStack[] a = new ItemStack[4];
         for ( int i = 0; i < armor.length; i++ )  
-        {
-            ItemStack s = armor[i].clone();
-            if ( ItemUtils.isArmorLeather( s.getType() ) ) 
+        {   
+            if ( armor[ i ] == null ) continue;
+            ItemStack itemStack = armor[i].clone();
+            if ( ItemUtils.isArmorLeather( itemStack.getType() ) ) 
             {
-                LeatherArmorMeta meta = ( LeatherArmorMeta ) s.getItemMeta();
+                LeatherArmorMeta meta = ( LeatherArmorMeta ) itemStack.getItemMeta();
                 meta.setColor( color );
-                s.setItemMeta( meta );
+                itemStack.setItemMeta( meta );
             }
-            a[i] = s;
+            ItemUtils.setArmor( inventory, itemStack );
         }
-        inventory.setArmorContents( a );
+
     }
 
 }
