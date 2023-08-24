@@ -23,7 +23,7 @@ public class StringUtils
         String t = text;
         if ( !t.isEmpty() )
         {
-            t = ChatColor.translateAlternateColorCodes( '&', t );
+            t = color( text );
             if ( placeholders != null && !placeholders.isEmpty() )
             {
                 Matcher m = PLACEHOLDER_PATTERN.matcher( t );

@@ -7,7 +7,6 @@ import xyz.connorchickenway.towers.game.entity.GamePlayer;
 import xyz.connorchickenway.towers.game.lang.utils.MessageUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -74,7 +73,7 @@ public enum Lang
             String f = text[i];
             if ( !f.isEmpty() )
             {
-                f = ChatColor.translateAlternateColorCodes( '&', f );
+                f = StringUtils.color( f );
                 if ( placeholders != null && !placeholders.isEmpty() )
                 {
                     Matcher m = StringUtils.PLACEHOLDER_PATTERN.matcher( f );
