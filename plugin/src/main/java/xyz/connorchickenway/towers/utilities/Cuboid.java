@@ -88,7 +88,7 @@ public class Cuboid
         return xMin + ";" + xMax + ";" + yMin + ";" + yMax + ";" + zMin + ";" + zMax + ";" + worldName;
     }
 
-    public static Cuboid fromString( String string )
+    public static Cuboid deserialize( String string )
     {
         String[] split = string.split( ";" );
         if ( split.length < 7 ) return null;
