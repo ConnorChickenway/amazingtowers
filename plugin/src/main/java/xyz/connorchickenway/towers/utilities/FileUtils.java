@@ -24,27 +24,6 @@ public class FileUtils
         file.delete();
     }
 
-    public static void copyDirectory( File source, File destination )
-    {
-        if ( source.isDirectory() )
-        {
-            if ( !destination.exists() )
-                destination.mkdirs();
-
-            String files[] = source.list();
-
-            for ( String file : files )
-            {
-                File srcFile = new File( source, file );
-                File destFile = new File( destination, file );
-
-                copyDirectory( srcFile, destFile );
-            }
-        }
-        else 
-            copyFile(source, destination);
-    }
-
     public static void copyFile( File source, File destination )
     {
         InputStream in = null;
@@ -60,7 +39,12 @@ public class FileUtils
             int length;
             while( ( length = in.read( buffer ) ) > 0 )
                 out.write( buffer, 0, length );
+            out.flush();    
         } catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        if ( in != null )
         {
             try
             {
@@ -69,7 +53,10 @@ public class FileUtils
             {
                 e1.printStackTrace();
             }
+        }
 
+        if ( out != null )
+        {
             try
             {
                 out.close();
