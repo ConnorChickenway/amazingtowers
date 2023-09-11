@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -42,6 +43,7 @@ public class SignManager extends ManagerController implements Listener
     {
         plugin.getServer().getPluginManager().registerEvents( this, plugin );
         this.attachedManager = new AttachedManager( plugin );
+        this.attachedManager.load();
     }
 
     @Override
@@ -50,10 +52,10 @@ public class SignManager extends ManagerController implements Listener
         
     }
 
-    @EventHandler( priority = EventPriority.MONITOR )
+    @EventHandler( priority = EventPriority.LOW )
     public void onClick( PlayerInteractEvent event )
     {
-        if ( event.isCancelled() || event.getAction() != Action.RIGHT_CLICK_BLOCK ) return;
+        if ( event.getAction() != Action.RIGHT_CLICK_BLOCK ) return;
         Location spawnLocation = StaticConfiguration.spawn_location;
         if ( spawnLocation != null )
         {
@@ -90,6 +92,7 @@ public class SignManager extends ManagerController implements Listener
                 {
                     player.sendMessage( message + gameSign.getGame().getGameName() );
                     gameSign.getGame().setGameSign( null );
+                    gameSign.delete();
                     signs.remove( gameSign );
                 }
             }
@@ -106,6 +109,7 @@ public class SignManager extends ManagerController implements Listener
                         {
                             player.sendMessage( message + gameSign.getGame().getGameName() );
                             gameSign.getGame().setGameSign( null );
+                            gameSign.delete();
                             signs.remove( gameSign );
                         }       
                     }
@@ -117,11 +121,17 @@ public class SignManager extends ManagerController implements Listener
     @EventHandler
     public void onUpdate( SignChangeEvent event )
     {
+        Player player = event.getPlayer();
+        if ( !player.isOp() || !player.hasPermission( "towers.admin" ) )
+        {
+            player.sendMessage( color( "&cYou have no permission to do that!" ) );
+            event.getBlock().breakNaturally();
+            return;
+        }
         String line = event.getLine( 0 );
         if ( line.equalsIgnoreCase( "[AmazingTowers]" ) )
         {
             final Block block = event.getBlock();
-            Player player = event.getPlayer();
             Location spawnWorld = StaticConfiguration.spawn_location;
             if ( spawnWorld == null ) 
             {
@@ -131,11 +141,6 @@ public class SignManager extends ManagerController implements Listener
             if ( !block.getWorld().equals( spawnWorld.getWorld() ) )
             {
                 block.breakNaturally();
-                return;
-            }
-            if ( !player.isOp() || player.hasPermission( "towers.admin" ) )
-            {
-                player.sendMessage( color( "&cYou have no permission to do that!" ) );
                 return;
             }
             line = event.getLine( 1 );
@@ -155,12 +160,14 @@ public class SignManager extends ManagerController implements Listener
                 {
                     breakNaturally = false;
                     message = color( "&7You've created a sign for the game &a" + game.getGameName() + "&7!" );
-                    GameSign gameSign = GameSign.newInstance( game , block.getLocation() );
+                    GameSign gameSign = new GameSign( game, ( Sign ) block.getState() );
+                    game.setGameSign( gameSign );
                     signs.add( gameSign );
                     gameSign.update();
+                    gameSign.save();
                 } 
                 else
-                    message = color( "&cThe arena " + line + " does not exist!" );  
+                    message = color( "&cThe arena &7" + line + " &cdoes not exist!" );  
             }
             if ( breakNaturally )
                 block.breakNaturally();

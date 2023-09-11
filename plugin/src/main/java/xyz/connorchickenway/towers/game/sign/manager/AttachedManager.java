@@ -55,7 +55,7 @@ public class AttachedManager extends ManagerController
         
     }
 
-    public AttachedBlock get( GameState gameState )
+    public AttachedBlock getAttachedBlock( GameState gameState )
     {
         return blockMap.get( gameState );
     }

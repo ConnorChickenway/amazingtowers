@@ -1,9 +1,11 @@
 package xyz.connorchickenway.towers.game.sign;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 
 import xyz.connorchickenway.towers.config.StaticConfiguration;
@@ -22,9 +24,8 @@ public class GameSign
     private Sign sign;
     private Block attachedBlock;
 
-    private GameSign( Game game, Sign sign )
+    public GameSign( Game game, Sign sign )
     {
-
         this.game = game;
         this.sign = sign;
         this.attachedBlock = NMSManager.get().getBlockUtilities().getAttachedBlock( sign.getBlock() );
@@ -51,7 +52,7 @@ public class GameSign
 
     public void updateAttachedBlock()
     {
-        AttachedBlock aBlock = AttachedManager.get().get( game.getState() );
+        AttachedBlock aBlock = AttachedManager.get().getAttachedBlock( game.getState() );
         if ( aBlock != null )
             aBlock.setType( attachedBlock );
     }
@@ -63,6 +64,32 @@ public class GameSign
             return;
         }
         game.join( gPlayer );
+    }
+
+    public void save()
+    {
+        try
+        {
+            File file = new File( game.getFolder(),  game.getGameName() + ".sign" );
+            if ( !file.exists() )
+                file.createNewFile();
+            DataOutputStream outputStream = new DataOutputStream( new FileOutputStream( file ) );
+            outputStream.writeInt( sign.getX() );
+            outputStream.writeInt( sign.getY() );
+            outputStream.writeInt( sign.getZ() );
+            outputStream.flush();
+            outputStream.close();
+        } catch ( Exception e )
+        {
+            
+        }
+    }
+
+    public void delete()
+    {
+        File file = new File( game.getFolder(),  game.getGameName() + ".sign" );
+        if ( file.exists() )
+            file.delete();
     }
 
     public Block getAttachedBlock()
@@ -79,7 +106,7 @@ public class GameSign
     {
         return game;
     }
-
+    
     private static String getStatus( GameState state )
     {
         switch( state )
@@ -100,12 +127,4 @@ public class GameSign
         return null;
     }
 
-    public static GameSign newInstance( Game game, org.bukkit.Location location )
-    {
-        BlockState bState = location.getBlock().getState();
-        if ( bState instanceof Sign )
-            return new GameSign( game, ( Sign ) bState );
-        return null;    
-    }
-    
 }
