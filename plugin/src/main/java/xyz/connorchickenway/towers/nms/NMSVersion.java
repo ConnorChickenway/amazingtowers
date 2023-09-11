@@ -26,7 +26,9 @@ public enum NMSVersion
     V1_18_R1,
     V1_18_R2,
     V1_19_R1,
-    V1_19_R2;
+    V1_19_R2,
+    V1_19_R3,
+    V1_20_R1;
 
 
     public boolean isAboveOrEqual( NMSVersion compare )
@@ -56,5 +58,9 @@ public enum NMSVersion
         return nmsVersion != null;
     }
 
+    public static boolean is1_13()
+    {
+        return nmsVersion == NMSVersion.V1_13_R1 || nmsVersion == NMSVersion.V1_13_R2;
+    }
 
 }
