@@ -5,11 +5,10 @@ import org.bukkit.inventory.ItemStack;
 
 import xyz.connorchickenway.towers.nms.NMSVersion;
 
-public class DefaultKit extends AbstractKit
+public class DefaultKit extends Kit
 {
     
-    @Override
-    public boolean load()
+    private DefaultKit()
     {
         armor[0] = new ItemStack( Material.LEATHER_HELMET );
         armor[1] = new ItemStack( Material.LEATHER_CHESTPLATE );
@@ -18,7 +17,13 @@ public class DefaultKit extends AbstractKit
         contents.put(0, new ItemStack( NMSVersion.isNewerVersion ? Material.WOODEN_SWORD : Material.valueOf( "WOOD_SWORD" ) ) );
         contents.put(1, new ItemStack( Material.STONE_PICKAXE) );
         contents.put(8, new ItemStack( Material.BAKED_POTATO, 64 ) );
-        return true;
+    }
+
+    private static DefaultKit instance = new DefaultKit();
+
+    public static DefaultKit getInstance()
+    {
+        return instance;
     }
 
 }

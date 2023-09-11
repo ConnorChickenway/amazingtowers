@@ -11,28 +11,18 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import xyz.connorchickenway.towers.utilities.ItemUtils;
 
-public abstract class AbstractKit 
+public class Kit 
 {
     
     protected Map<Integer, ItemStack> contents;
     protected ItemStack[] armor;
 
-    public AbstractKit() 
+    public Kit() 
     {
         this.contents = new HashMap<>();
         this.armor = new ItemStack[4];
     }
 
-    /**
-     * @return true if function loads without error.
-     */
-    public abstract boolean load();
-
-    /**
-     * Sends a kit to Player
-     * @param player 
-     * @param color 
-     */
     public void sendKit( Player player, Color color ) 
     {
         PlayerInventory inventory = player.getInventory();
@@ -50,7 +40,16 @@ public abstract class AbstractKit
             }
             ItemUtils.setArmor( inventory, itemStack );
         }
+    }
 
+    public void addItem( int index, ItemStack itemStack )
+    {
+        contents.put( index, itemStack );
+    }
+
+    public void addArmor( ItemStack[] armor )
+    {
+        this.armor = armor;
     }
 
 }
