@@ -99,9 +99,6 @@ public class CommandManager extends ManagerController implements CommandExecutor
             try
             {
                 cr = ( CommandReason ) pair.getValue().invoke(  sCommandListener, sender, getArgs( args, isSetup ) );
-                System.out.println( pair.getKey().subcmd() );
-                for ( String arg : getArgs( args, isSetup ) )
-                    System.out.println( arg );
             } catch ( Exception e )
             {
                 e.printStackTrace();

@@ -37,9 +37,7 @@ public class SlimeWorldLoader implements GameWorld
             SlimeWorld slimeWorld = SLIME_PLUGIN.loadWorld( loader, worldName, true, getProperties() );
             SLIME_PLUGIN.generateWorld( slimeWorld );
             return true;
-        } catch( Exception ignore ){
-            System.out.println( ignore );
-        }
+        } catch( Exception ignore ){}
         return false;
     }
 

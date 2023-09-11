@@ -14,9 +14,9 @@ public class Logger
         logger.info( info );
     }
 
-    public static void error( Exception ex )
+    public static void error( String info, Exception ex )
     {
-        logger.log( Level.WARNING, "There is an exception!", ex );
+        logger.log( Level.WARNING, info, ex );
     }
 
 }

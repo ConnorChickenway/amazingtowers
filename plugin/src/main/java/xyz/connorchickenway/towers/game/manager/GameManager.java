@@ -26,6 +26,7 @@ import xyz.connorchickenway.towers.game.world.GameWorld;
 import xyz.connorchickenway.towers.game.world.SlimeWorldLoader;
 import xyz.connorchickenway.towers.game.world.WorldLoader;
 import xyz.connorchickenway.towers.utilities.GameMode;
+import xyz.connorchickenway.towers.utilities.Logger;
 import xyz.connorchickenway.towers.utilities.ManagerController;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
@@ -68,7 +69,7 @@ public class GameManager extends ManagerController
                 File arenaFile = new File( file, file.getName() + ".json" );
                 if ( !arenaFile.exists() )
                 {
-                    System.out.println( "Cannot read the arena file from " + file.getName() + " directory! (It not exists)" );
+                    Logger.info( "Cannot read the arena file from " + file.getName() + " directory! (It not exists)" );
                     continue;
                 }
                 try
@@ -78,31 +79,31 @@ public class GameManager extends ManagerController
                     jsonReader.close();
                     if ( !gBuilder.hasEverything() )
                     {
-                        System.out.println( "Cannot convert " + arenaFile.getName() + " file to arena because it lacks of something." );
+                        Logger.info( "Cannot convert " + arenaFile.getName() + " file to arena because it lacks of something." );
                         continue;
                     }
                     GameWorld gameWorld = gBuilder.getWorldLoader() == WorldLoader.BUKKIT ? new BukkitWorldLoader( gBuilder.getName() ) :   
                         AmazingTowers.SLIME_PLUGIN != null ? new SlimeWorldLoader( gBuilder.getName() ) : null;
-                    System.out.println( gBuilder.getName() );    
+                    Logger.info( gBuilder.getName() );    
                     if ( gameWorld != null )
                     {
                         boolean load = gameWorld.load();
                         if ( !load )
                         {
-                            System.out.println( "cannot load" );
+                            Logger.info( "cannot load" );
                             continue;
                         }
                         gBuilder.setGameWorld( gameWorld );
-                        System.out.println( "world loaded.! " + gBuilder.getName() );
+                        Logger.info( "world loaded.! " + gBuilder.getName() );
                     }
                     else 
                     {
-                        System.out.println( "cannot load | variable is null" );
+                        Logger.info( "cannot load | variable is null" );
                         continue;
                     }
                     Game game = gBuilder.build();
                     addGame( game ); 
-                    System.out.println( "Arena " + gBuilder.getName() + " loaded correctly.!" );
+                    Logger.info( "Arena " + gBuilder.getName() + " loaded correctly.!" );
                     if ( GameMode.isMultiArena() )
                     {
                         DataInputStream dataInputStream = null;
@@ -127,12 +128,12 @@ public class GameManager extends ManagerController
                                         gameSign.update();
                                         signManager.add( gameSign );
                                     }else 
-                                        System.out.println( "Could not load the block because it's not a sign." );
+                                        Logger.info( "Could not load the block because it's not a sign." );
                                 }    
                             }
                         }catch( Exception ex ) 
                         {
-                            System.out.println( "Could not load the sign file because it lacks of data.!" );
+                            Logger.info( "Could not load the sign file because it lacks of data.!" );
                         }
                         if ( dataInputStream != null )
                             dataInputStream.close();

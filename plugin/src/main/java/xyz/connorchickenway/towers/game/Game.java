@@ -361,7 +361,6 @@ public class Game
         while( iterator.hasNext() )
         {
             GamePlayer gPlayer = iterator.next();
-            System.out.println( gPlayer.toBukkitPlayer().getName() );
             leave( gPlayer, false );
             if ( GameMode.isMultiArena() )
             {

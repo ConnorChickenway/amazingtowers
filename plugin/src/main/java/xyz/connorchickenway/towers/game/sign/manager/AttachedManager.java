@@ -13,6 +13,7 @@ import xyz.connorchickenway.towers.game.manager.GameManager;
 import xyz.connorchickenway.towers.game.state.GameState;
 import xyz.connorchickenway.towers.nms.Color;
 import xyz.connorchickenway.towers.nms.NMSVersion;
+import xyz.connorchickenway.towers.utilities.Logger;
 import xyz.connorchickenway.towers.utilities.ManagerController;
 
 public class AttachedManager extends ManagerController
@@ -42,7 +43,7 @@ public class AttachedManager extends ManagerController
                 material = Material.valueOf( NMSVersion.isNewerVersion ? ( color.name() + "_" + materialStr ) : materialStr );
             } catch( Exception ex )
             {
-                System.out.println( "There was an error loading an attached block from config! (" + value.name() + ")" + ex.getMessage() );
+                Logger.error( "There was an error loading an attached block from config! (" + value.name() + ")", ex );
                 continue;
             }
             blockMap.put( value , new AttachedBlock( material , color ) );
