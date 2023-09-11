@@ -1,12 +1,16 @@
 package xyz.connorchickenway.towers;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.grinderwolf.swm.api.SlimePlugin;
 
 import xyz.connorchickenway.towers.cmd.CommandManager;
 import xyz.connorchickenway.towers.config.ConfigurationManager;
+import xyz.connorchickenway.towers.game.builder.setup.SetupListener;
 import xyz.connorchickenway.towers.game.entity.manager.EntityManager;
 import xyz.connorchickenway.towers.game.manager.GameManager;
 import xyz.connorchickenway.towers.game.scoreboard.manager.ScoreboardManager;
@@ -26,6 +30,12 @@ public class AmazingTowers extends JavaPlugin
     public void onEnable()
     {
         instance = this;
+        PluginManager pm = Bukkit.getPluginManager();
+        pm.registerEvents( new SetupListener(), this );
+        if ( pm.isPluginEnabled( "SlimeWorldManager" ) )
+        {
+            SLIME_PLUGIN = ( SlimePlugin ) pm.getPlugin( "SlimeWorldManager" );
+        }
         this.configurationManager = new ConfigurationManager();
         this.commandManager = new CommandManager( this );
         this.nmsManager = new NMSManager( this );
@@ -73,7 +83,7 @@ public class AmazingTowers extends JavaPlugin
     {
         return scoreboardManager;
     }
-
+    
     public static AmazingTowers getInstance()
     {
         return instance;
@@ -85,5 +95,7 @@ public class AmazingTowers extends JavaPlugin
             .disableHtmlEscaping()
             .setPrettyPrinting()
             .create();
+
+    public static SlimePlugin SLIME_PLUGIN;
 
 }
