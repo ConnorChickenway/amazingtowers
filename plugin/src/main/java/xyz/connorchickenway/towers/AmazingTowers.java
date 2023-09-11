@@ -1,6 +1,7 @@
 package xyz.connorchickenway.towers;
 
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,11 +11,16 @@ import com.grinderwolf.swm.api.SlimePlugin;
 
 import xyz.connorchickenway.towers.cmd.CommandManager;
 import xyz.connorchickenway.towers.config.ConfigurationManager;
+import xyz.connorchickenway.towers.game.builder.adapters.CuboidAdapter;
+import xyz.connorchickenway.towers.game.builder.adapters.ItemStackAdapter;
+import xyz.connorchickenway.towers.game.builder.adapters.LocationAdapter;
 import xyz.connorchickenway.towers.game.builder.setup.SetupListener;
 import xyz.connorchickenway.towers.game.entity.manager.EntityManager;
 import xyz.connorchickenway.towers.game.manager.GameManager;
 import xyz.connorchickenway.towers.game.scoreboard.manager.ScoreboardManager;
 import xyz.connorchickenway.towers.nms.NMSManager;
+import xyz.connorchickenway.towers.utilities.Cuboid;
+import xyz.connorchickenway.towers.utilities.location.Location;
 
 public class AmazingTowers extends JavaPlugin
 {
@@ -94,6 +100,9 @@ public class AmazingTowers extends JavaPlugin
     public static Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
             .setPrettyPrinting()
+            .registerTypeAdapter( Cuboid.class, new CuboidAdapter() )
+            .registerTypeAdapter( Location.class, new LocationAdapter() )
+            .registerTypeAdapter( ItemStack.class, new ItemStackAdapter() )
             .create();
 
     public static SlimePlugin SLIME_PLUGIN;
