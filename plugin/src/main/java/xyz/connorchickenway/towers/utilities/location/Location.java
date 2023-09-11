@@ -13,11 +13,17 @@ public class Location
     private final String world;
     private double x, y, z;
     private float yaw, pitch;
+    
+    public Location( org.bukkit.Location location, boolean yawPitch )
+    {
+        this( location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), 
+            yawPitch ? location.getYaw() : 0.0f, 
+            yawPitch ? location.getPitch() : 0.0f );
+    }
 
     public Location( org.bukkit.Location location )
     {
-        this( location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(),
-                location.getPitch() );
+        this( location, true );
     }
 
     public Location( String world, double x, double y, double z )
@@ -62,7 +68,7 @@ public class Location
         return new org.bukkit.Location( world, x, y, z, yaw, pitch );
     }
 
-    public String serializable()
+    public String serialize()
     {
         StringBuilder builder = new StringBuilder();
         builder.append( x ).append( ";" ).append( y ).append( ";" ).append( z ).append( ";" );
@@ -110,23 +116,23 @@ public class Location
         return pitch;
     }
 
-    public static Location fromString( String loc )
+    public static Location deserialize( String loc )
     {
         if ( loc == null )
         {
             return null;
         }
         String[] split = loc.split( ";" );
-        if ( split.length > 3 )
+        if ( split.length >= 6 )
         {
-            return new Location( split[ split.length - 1 ] , 
+            return new Location( split[ 5 ] , 
                         Double.valueOf( split[ 0 ] ), 
                         Double.valueOf( split[ 1 ] ), 
                         Double.valueOf( split[ 2 ] ), 
                         Float.valueOf( split[ 3 ] ), 
                         Float.valueOf( split[ 4 ] ) );
         }
-        return new Location( split[ split.length - 1 ] , 
+        return new Location( split[ 3 ] , 
                         Double.valueOf( split[ 0 ] ), 
                         Double.valueOf( split[ 1 ] ), 
                         Double.valueOf( split[ 2 ] ) );
