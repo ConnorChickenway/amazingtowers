@@ -11,6 +11,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemUtils 
 {
 
+    public static ItemStack wandItemStack = ItemBuilder
+        .of( Material.IRON_AXE )
+        .setDisplayName( ChatColor.GREEN + "Region Selector" )
+        .toItemStack();
+
+    public static ItemStack blueItem, redItem, quitItem;
+
     public static boolean isArmorLeather( Material material ) 
     {
         switch ( material )  
