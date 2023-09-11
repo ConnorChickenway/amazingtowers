@@ -20,7 +20,7 @@ public class GamePlayer
     {
         this.player = player;
         if ( GameMode.isMultiArena() )
-            this.inventorySession = new InventorySession( this );
+            this.inventorySession = new InventorySession( this );  
     }
     
     public Location getLocation()
@@ -61,6 +61,11 @@ public class GamePlayer
     public Game getGame()
     {
         return game;
+    }
+
+    public boolean isInGame( Game game )
+    {
+        return game == this.game;
     }
     
     public InventorySession getInventorySession()

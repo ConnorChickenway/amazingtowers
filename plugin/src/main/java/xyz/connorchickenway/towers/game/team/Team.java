@@ -4,12 +4,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -19,9 +17,13 @@ import com.google.common.collect.Sets;
 
 import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.Game;
+import xyz.connorchickenway.towers.game.entity.GamePlayer;
+import xyz.connorchickenway.towers.game.entity.manager.EntityManager;
 import xyz.connorchickenway.towers.game.lang.Lang;
 import xyz.connorchickenway.towers.game.state.GameState;
+import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.Cuboid;
+import xyz.connorchickenway.towers.utilities.MetadataUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
@@ -44,10 +46,11 @@ public class Team
     public Team( Game game, String teamName, ChatColor chatColor, Color color, String configName )
     {
         this.team = game.getScoreboard().registerNewTeam( teamName );
-        this.team.setPrefix( chatColor + "[" + configName + "]" );
+        this.team.setPrefix( chatColor + "[" + configName + "] " );
         this.team.setAllowFriendlyFire( false );
         this.team.setCanSeeFriendlyInvisibles( true );
-        this.team.setColor( chatColor );
+        if ( NMSVersion.isNewerVersion )
+            this.team.setColor( chatColor );
         this.game = game;
         this.teamName = teamName;
         this.chatColor = chatColor;
@@ -61,25 +64,25 @@ public class Team
         if ( !players.contains( player.getUniqueId() ) || player.getHealth() == 0 ) return;
         ++points;
         spawn.teleport( player );
-        game.message( Lang.getLang( "point_scored" ),
+        game.message( Lang.POINT_FOR_TEAM,
                 builder( 
                     pair( PLAYER_NAME , player, chatColor ),
                     pair( COLOR_TEAM, chatColor ),
                     pair( TEAM_NAME , teamName ) ) );
-        if ( points >= 10 ) game.finishArena( this );
+        if ( points >= game.getMaxPoints() ) game.finishArena( this );
     }
 
-    public void addPlayer( Player player, int enemyTeam )
+    public boolean addPlayer( Player player, int enemyTeam )
     {
         if ( players.contains( player.getUniqueId() ) )
         {
             Lang.ALREADY_TEAM.sendLang( player, null );
-            return;
+            return false;
         }
         if ( players.size() > enemyTeam )
         {
             Lang.UNBALANCED_TEAM.sendLang( player, null );
-            return;
+            return false;
         }
         players.add( player.getUniqueId() );
         Lang.JOIN_TEAM.sendLang( player, 
@@ -87,7 +90,8 @@ public class Team
                 pair( TEAM_NAME, configName ),
                 pair( COLOR_TEAM, chatColor )
              ) );
-        if ( game.isState( GameState.GAME ) ) doStuff( player );
+        if ( game.isState( GameState.GAME ) ) doStuff( player, true );
+        return true;
     }
 
     public void launchFireworks()
@@ -117,16 +121,17 @@ public class Team
 
     public void startGame()
     {
-        this.getOnlinePlayers().forEach( ( player ) -> 
-        {
-            player.setGameMode( GameMode.SURVIVAL );
-            doStuff( player );
-            this.team.addEntry( player.getName() );
-        } );
+        this.getOnlinePlayers().forEach( ( player ) -> doStuff( player, true ) );
     }
 
-    public void doStuff( Player player )
+    public void doStuff( Player player, boolean starting )
     {
+        if ( starting )
+        {
+            player.setGameMode( GameMode.SURVIVAL );
+            this.team.addEntry( player.getName() );
+            MetadataUtils.remove( player, "items-game" );
+        }
         game.getKit().sendKit( player, color );
         this.spawn.teleport( player );
     }
@@ -154,9 +159,9 @@ public class Team
         Iterator<UUID> iterator = players.iterator();
         while( iterator.hasNext() )
         {
-            UUID id = iterator.next();
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer( id );
-            if ( offlinePlayer.isOnline() ) builder.add( (Player) offlinePlayer );
+            GamePlayer player = EntityManager.getPlayer( iterator.next() );
+            if ( player != null && player.isInGame( game ) )
+                builder.add( player.toBukkitPlayer() );        
         }
         return builder.build();
     }
@@ -177,8 +182,9 @@ public class Team
         Iterator<UUID> iterator = players.iterator();
         while( iterator.hasNext() )
         {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer( iterator.next() );
-            if ( offlinePlayer.isOnline() ) ++i;
+            GamePlayer player = EntityManager.getPlayer( iterator.next() );
+            if ( player != null && player.isInGame( game ) ) 
+                ++i;
         }
         return i;
     }

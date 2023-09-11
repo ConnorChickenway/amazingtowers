@@ -45,7 +45,7 @@ public class EntityManager extends ManagerController implements Listener
         players.put( player.getUniqueId() , GamePlayer.create( player ) );
     }
 
-    @EventHandler( priority = EventPriority.LOWEST )
+    @EventHandler( priority = EventPriority.MONITOR )
     public void onQuit( PlayerQuitEvent event ) 
     {
         Player player = event.getPlayer();
@@ -60,6 +60,11 @@ public class EntityManager extends ManagerController implements Listener
     public GamePlayer get( UUID id )
     {
         return players.get( id );
+    }
+
+    public static GamePlayer getPlayer( UUID id )
+    {
+        return AmazingTowers.getInstance().getEntityManager().get( id );
     }
 
 }

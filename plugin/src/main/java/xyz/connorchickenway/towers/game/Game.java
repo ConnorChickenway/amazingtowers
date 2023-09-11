@@ -1,5 +1,6 @@
 package xyz.connorchickenway.towers.game;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -15,16 +16,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
 import xyz.connorchickenway.towers.game.entity.inventory.InventorySession;
-import xyz.connorchickenway.towers.game.kit.AbstractKit;
+import xyz.connorchickenway.towers.game.kit.Kit;
 import xyz.connorchickenway.towers.game.lang.Lang;
 import xyz.connorchickenway.towers.game.lang.placeholder.Placeholder;
 import xyz.connorchickenway.towers.game.runnable.GameCountdown;
@@ -39,6 +43,7 @@ import xyz.connorchickenway.towers.game.world.GameWorld;
 import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.ItemUtils;
+import xyz.connorchickenway.towers.utilities.MetadataUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
@@ -51,8 +56,9 @@ public class Game
     private final Set<GamePlayer> players;
     private final Map<TaskId, GameRunnable> taskMap;
     private final Scoreboard scoreboard;
-    private final GameWorld gameWorld;
-    private AbstractKit kit;
+    private final File folder;
+    private GameWorld gameWorld;
+    private Kit kit;
     private GameState state;
     private Team red, blue;
     private Location lobby, ironGenerator, expGenerator;
@@ -66,11 +72,11 @@ public class Game
         this.players = Sets.newConcurrentHashSet();
         this.taskMap = Maps.newHashMap();
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        this.gameWorld = new GameWorld( gameName );
         this.state = GameState.LOBBY;
         this.red = new Team( this, "red", ChatColor.RED, Color.RED, StaticConfiguration.red_name );
         this.blue = new Team( this, "blue", ChatColor.BLUE, Color.BLUE, StaticConfiguration.blue_name );
         this.gameScoreboard = new GameScoreboard();
+        this.folder = new File( AmazingTowers.getInstance().getGameManager().getGameFolder(),  gameName );
     }
 
     public void join( GamePlayer gamePlayer )
@@ -85,10 +91,6 @@ public class Game
         players.add( gamePlayer );
         player.setScoreboard( scoreboard );
         gameScoreboard.add( gamePlayer );
-        message( Lang.JOIN_ARENA,
-                builder( pair( PLAYER_NAME, player.getName() ),
-                        pair( ONLINE_PLAYERS , players.size() ),
-                        pair( MAX_PLAYERS, maxPlayers ) ) );
         InventorySession iSession = gamePlayer.getInventorySession();
         if ( iSession != null )
             iSession.save();
@@ -99,45 +101,55 @@ public class Game
             
             case LOBBY: 
                 updateScoreboard();
-                if ( players.size() >= maxPlayers )
+                if ( players.size() >= minPlayers )
                     startArena();   
+                break;
+            case GAME:
+                if ( hasTeam )
+                {
+                    player.setGameMode( org.bukkit.GameMode.SURVIVAL );
+                    this.getTeam( player.getUniqueId() ).doStuff( player, false );
+                }
                 break;
             case FINISH:
                 player.setGameMode( org.bukkit.GameMode.SPECTATOR );
                 break;        
             
             default:
-                if ( hasTeam )
-                {    
-                    player.setGameMode( org.bukkit.GameMode.SURVIVAL );
-                    this.getTeam( player.getUniqueId() ).doStuff( player );
-                } else
-                {
-                    player.setGameMode( org.bukkit.GameMode.ADVENTURE );
-                    lobby.teleport( player );
-                }
                 break;
 
         }
+        if ( !hasTeam )
+        {
+            if ( player.getGameMode() != org.bukkit.GameMode.SPECTATOR )
+                player.setGameMode( org.bukkit.GameMode.ADVENTURE );
+            lobby.teleport( player );
+            setItems( player );
+        }
         if ( gameSign != null )
             gameSign.update();
+        message( Lang.JOIN_ARENA,
+                builder( pair( PLAYER_NAME, player ),
+                        pair( ONLINE_PLAYERS , players.size() ),
+                        pair( MAX_PLAYERS, maxPlayers ) ) );    
     } 
 
     public void leave( GamePlayer gamePlayer, boolean leaveMessage )
     {
         players.remove( gamePlayer );
         gamePlayer.setGame( null );
-        gamePlayer.toBukkitPlayer().setScoreboard( null );
         gameScoreboard.remove( gamePlayer );
+        MetadataUtils.remove( gamePlayer.toBukkitPlayer(), "items-game" );
         if ( leaveMessage )
             message( Lang.LEAVE_ARENA, builder( 
-                pair( PLAYER_NAME, gamePlayer.toBukkitPlayer(), null ),
+                pair( PLAYER_NAME, gamePlayer.toBukkitPlayer() ),
                 pair( ONLINE_PLAYERS, players.size() ) ,
                 pair( MAX_PLAYERS, maxPlayers ) ) );
         switch( state )
         {
             
-            case STARTING: case LOBBY:
+            case STARTING: 
+            case LOBBY:
                 if ( state == GameState.LOBBY )
                     updateScoreboard();
                 if ( isStarting() )
@@ -149,6 +161,8 @@ public class Game
                         {
                             message( Lang.NECESSARY_PLAYERS, null );
                             countdownGame.cancel();
+                            state = GameState.LOBBY;
+                            updateScoreboard();
                         }
                     }
                 }
@@ -183,7 +197,7 @@ public class Game
         GameRunnable gameRunnable = taskMap.get( TaskId.START_COUNTDOWN );
         if ( gameRunnable != null )
         {
-            gameRunnable.startTimer();
+            gameRunnable.startTimer( false );
         } else 
         newRunnable( new GameCountdown( this, TaskId.START_COUNTDOWN, count ) 
         {
@@ -206,10 +220,15 @@ public class Game
                 message( Lang.GAME_START, 
                     Placeholder.builder(
                         pair( COUNT ,  this.getSeconds() ),
-                        pair( SECONDS , this.getSeconds() ) ) );
-                updateScoreboard();        
+                        pair( SECONDS , this.getSeconds() ) ) );     
             }
 
+            @Override
+            public void doPerSecond()
+            {
+                updateScoreboard();
+            }
+            
         } );
         if ( gameSign != null )
             gameSign.update();
@@ -230,13 +249,31 @@ public class Game
             @Override
             public void doStuff() 
             {
-                //POOLS
-                pools();
                 //GENERATORS
                 generators();
                 //SCOREBOARD
                 updateScoreboard();
             }
+        } );
+        newRunnable( new GameTask( this, TaskId.POOLS_TASK, 10 ) 
+        {
+
+            @Override
+            public boolean cancelTask()
+            {
+                return isState( GameState.FINISH );
+            }
+
+            @Override
+            public void doCancelStuff()
+            {}
+
+            @Override
+            public void doStuff()
+            {
+                pools();
+            }
+            
         } );
         if ( gameSign != null )
             gameSign.update();
@@ -247,7 +284,7 @@ public class Game
     private void generators()
     {
         //GENERATORS
-        if ( generators >= 2 ) 
+        if ( generators >= 3 ) 
         {
             ironGenerator.dropItem( Material.IRON_INGOT );
             expGenerator.dropItem( NMSVersion.isNewerVersion ? Material.EXPERIENCE_BOTTLE : Material.valueOf( "EXP_BOTTLE" ) );
@@ -267,12 +304,15 @@ public class Game
             {
                 org.bukkit.Location bLocation = gPlayer.getLocation(); 
                 if ( enemyTeam.getPool().isIn( bLocation ) )
-                    this.getTeam( gPlayer.getUniqueId() ).addPoint( gPlayer.toBukkitPlayer() );
+                {   
+                    Team team = this.getTeam( gPlayer.getUniqueId() );
+                    team.addPoint( gPlayer.toBukkitPlayer() );
+                }
             }
         }
     }
 
-    public void finishArena( Team team ) 
+    public void finishArena( Team winnerTeam ) 
     {
         this.state = GameState.FINISH;
         GameRunnable gRunnable = this.taskMap.get( TaskId.GAME_TASK );
@@ -280,11 +320,11 @@ public class Game
             gRunnable.cancel();
         message( Lang.WIN_FOR_TEAM, 
             builder( 
-                pair( COLOR_TEAM , team.getChatColor() ),
-                pair( TEAM_NAME, team.getConfigName() ) ) );
+                pair( COLOR_TEAM , winnerTeam.getChatColor() ),
+                pair( TEAM_NAME, winnerTeam.getConfigName() ) ) );
         gRunnable = taskMap.get( TaskId.FINISH_TASK );
         if ( gRunnable != null )
-            gRunnable.startTimer();
+            gRunnable.startTimer( false );
         else 
         {
             newRunnable( new GameTask( this, TaskId.FINISH_TASK, 40 ) 
@@ -292,8 +332,7 @@ public class Game
 
                 public void doCancelStuff() 
                 {
-                    this.cancel();
-                    teleportPlayers();
+                    teleportPlayers( winnerTeam );
                     reloadArena();
                 };
 
@@ -307,7 +346,7 @@ public class Game
                 @Override
                 public void doStuff() 
                 {
-                    team.launchFireworks();
+                    winnerTeam.launchFireworks();
                     counter.incrementAndGet();
                 }
             } );
@@ -316,20 +355,25 @@ public class Game
             gameSign.update();  
     }
 
-    private void teleportPlayers()
+    private void teleportPlayers( Team winnerTeam )
     {
-        players.forEach( gPlayer -> 
+        Iterator<GamePlayer> iterator = players.iterator();
+        while( iterator.hasNext() )
         {
+            GamePlayer gPlayer = iterator.next();
+            System.out.println( gPlayer.toBukkitPlayer().getName() );
+            leave( gPlayer, false );
             if ( GameMode.isMultiArena() )
             {
-                InventorySession inventorySession = gPlayer.getInventorySession();
-                inventorySession.load();
-                inventorySession.clear();
-                return;
-            }
-            
-        } );
-        
+                Location location = StaticConfiguration.spawn_location;
+                if ( location != null )
+                {
+                    gPlayer.toBukkitPlayer().teleport( location.toBukkitLocation() );
+                    return;
+                }
+            }else 
+                gPlayer.toBukkitPlayer().kickPlayer( getWinnerMessage( winnerTeam ) );
+        }
     }
 
     public void reloadArena() 
@@ -340,7 +384,7 @@ public class Game
         this.blue.clear();
         this.players.clear();
         this.taskMap.clear();
-        this.gameWorld.unload();
+        this.gameWorld.unload( false );
         this.gameWorld.load();
         GameCountdown gameCountdown = ( GameCountdown ) taskMap.get( TaskId.START_COUNTDOWN );
         if ( gameCountdown != null )
@@ -361,14 +405,14 @@ public class Game
             if ( player.getLastDamageCause().getCause() == DamageCause.PROJECTILE )
             {
                 message( Lang.DEATH_BY_PROJECTILE ,  builder(
-                    pair( PLAYER_NAME , player, getChatColor( player ) ),
-                    pair( KILLER_NAME ,  killer, getChatColor( killer ) ), 
-                    pair( DISTANCE , player ) ) );
+                    pair( PLAYER_NAME, player, getChatColor( player ) ),
+                    pair( KILLER_NAME,  killer, getChatColor( killer ) ), 
+                    pair( DISTANCE, player ) ) );
             }
             else 
-                message( Lang.DEATH_BY_PLAYER ,  builder(
-                    pair( PLAYER_NAME , player, getChatColor( player ) ),
-                    pair( KILLER_NAME ,  killer, getChatColor( killer ) )
+                message( Lang.DEATH_BY_PLAYER,  builder(
+                    pair( PLAYER_NAME, player, getChatColor( player ) ),
+                    pair( KILLER_NAME,  killer, getChatColor( killer ) )
                 ) );
 
             return;
@@ -381,21 +425,34 @@ public class Game
                 if ( ItemUtils.isArmorLeather( itemStack.getType() ) )
                     itemStack.setType( Material.AIR );
         if ( StaticConfiguration.instant_respawn )
-            player.spigot().respawn();      
+            Bukkit.getScheduler().runTaskLater( AmazingTowers.getInstance(), () -> 
+                player.spigot().respawn(), 2L );    
+    }
+
+    public void respawn( PlayerRespawnEvent event )
+    {
+        Player player = event.getPlayer();
+        Team team = getTeam( player.getUniqueId() );
+        if ( team != null )
+        {
+            this.getKit().sendKit( player, team.getColor() );
+            event.setRespawnLocation( team.getSpawn().toBukkitLocation() );
+        }
+        else 
+            event.setRespawnLocation( lobby.toBukkitLocation() );   
     }
 
     public void chat( AsyncPlayerChatEvent event )
     {
         event.setCancelled( true );
         Player player = event.getPlayer();
-        final String playerName = player.getName(),
-            eventMsg = event.getMessage();
+        String eventMsg = event.getMessage();
         AtomicReference<String> message = new AtomicReference<String>( "" ); 
         if ( state == GameState.LOBBY || state == GameState.STARTING || !hasTeam( player.getUniqueId() ) )
         {
             message.set( StringUtils.replacePlaceholders( StaticConfiguration.normal_format, 
                 builder( 
-                    pair( PLAYER_NAME, playerName ),
+                    pair( PLAYER_NAME, player ),
                     pair( MESSAGE, eventMsg )
                 ) ) );
             players.forEach( gPlayer -> gPlayer.sendMessage( message.get() ) );    
@@ -404,13 +461,49 @@ public class Game
         Team team = getTeam( player.getUniqueId() );
         message.set( StringUtils.replacePlaceholders( StaticConfiguration.team_format, 
             builder( 
-                pair( PLAYER_NAME, playerName ),
+                pair( PLAYER_NAME, player ),
                 pair( MESSAGE, eventMsg ),
                 pair( COLOR_TEAM, getChatColor( player ) ),
                 pair( TEAM_NAME, team.getConfigName() )
             )
         ) );
         team.getOnlinePlayers().forEach( pl -> pl.sendMessage( message.get() ) );
+    }
+
+    private String getWinnerMessage( Team winnerTeam )
+    {
+        StringBuilder builder = new StringBuilder();
+        String[] text = Lang.WIN_FOR_TEAM.get();
+        boolean previousEmpty = false;
+        for ( int x = 0; x < text.length; x++ )
+        {
+            String t = text[x];
+            if ( t.isEmpty() )
+            {
+                if ( !previousEmpty ) builder.append( "\n" );
+                previousEmpty = true;
+            } else
+            {
+                builder.append(
+                        StringUtils.replacePlaceholders( t, builder( pair( COLOR_TEAM, winnerTeam.getChatColor() ),
+                                pair( TEAM_NAME, winnerTeam.getConfigName() ) ) ) );
+                builder.append( "\n" );
+                previousEmpty = false;
+            }
+        }
+        return builder.toString();
+    }
+
+    private void setItems( Player player )
+    {
+        Inventory inventory = player.getInventory();
+        ItemStack redItem = ItemUtils.redItem.clone(),
+            blueItem = ItemUtils.blueItem.clone();
+        inventory.setItem( StaticConfiguration.red_position, redItem );
+        inventory.setItem( StaticConfiguration.blue_position, blueItem );
+        inventory.setItem( StaticConfiguration.quit_position, ItemUtils.quitItem );
+        ItemStack[] items = {redItem, blueItem};
+        MetadataUtils.set( player, "items-game", items );
     }
 
     public void updateScoreboard()
@@ -426,6 +519,12 @@ public class Game
     private void newRunnable( GameRunnable gameRunnable )
     {
         this.taskMap.put( gameRunnable.getTaskID() , gameRunnable );
+    }
+
+    public int getRealSeconds()
+    {
+        GameCountdown gameRunnable = ( GameCountdown ) this.taskMap.get( TaskId.START_COUNTDOWN );
+        return gameRunnable.getSeconds();
     }
 
     private ChatColor getChatColor( Player player )
@@ -464,6 +563,11 @@ public class Game
         return this.state == state;
     }
 
+    public boolean isLobby()
+    {
+        return this.state == GameState.LOBBY || this.state == GameState.STARTING;
+    }
+
     public String getGameName()
     {
         return gameName;
@@ -484,7 +588,7 @@ public class Game
         return this.blue;
     }
     
-    public AbstractKit getKit()
+    public Kit getKit()
     {
         return kit;
     }
@@ -524,7 +628,7 @@ public class Game
         this.expGenerator = expGenerator;
     }
 
-    public void setKit( AbstractKit abstractKit )
+    public void setKit( Kit abstractKit )
     {
         this.kit = abstractKit;
     }
@@ -559,12 +663,11 @@ public class Game
         return count;
     }
 
-    
     public GameWorld getGameWorld()
     {
         return gameWorld;
     }
-    
+
     public GameState getState()
     {
         return state;
@@ -580,6 +683,11 @@ public class Game
         return maxPlayers;
     }
     
+    public void setGameWorld( GameWorld gameWorld )
+    {
+        this.gameWorld = gameWorld;
+    }
+
     public void setGameSign( GameSign gameSign )
     {
         this.gameSign = gameSign;
@@ -588,6 +696,11 @@ public class Game
     public GameSign getGameSign()
     {
         return gameSign;
+    }
+    
+    public File getFolder()
+    {
+        return folder;
     }
 
     public static Game newInstance( String name )
