@@ -10,7 +10,7 @@ chat:
     team_chat: '%color_team%&l[%team_name%] %prefix% &f%player_name% &8: &f%msg%'
     global_chat: '%color_team%&l[GLOBAL] %prefix% &f%player_name% &7: &f%msg%'
 #this option is for prevent drop armor
-drop_leather_armor: false
+drop_leather_armor: true
 instant_respawn: true
 #options:
 # MULTI_ARENA
@@ -44,4 +44,16 @@ options:
   bungeemode:
     server_name: 'towers_lobby'
 
-    
+items:
+  ## AVAILABLE OPTIONS: WOOL, DYE
+  item-name: WOOL
+  red:
+    name: '&c&lJOIN TEAM RED &7(Right Click)'
+    position: 0
+  blue:
+    name: '&9&lJOIN TEAM BLUE &7(Right Click)'
+    position: 1
+  # this item is a bed.  
+  quit:
+    name: '&c&lReturn to lobby &7(Right Click)'
+    position: 8
