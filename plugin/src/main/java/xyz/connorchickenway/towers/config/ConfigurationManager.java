@@ -1,12 +1,13 @@
 package xyz.connorchickenway.towers.config;
 
 import xyz.connorchickenway.towers.AmazingTowers;
+import xyz.connorchickenway.towers.game.lang.Lang;
 import xyz.connorchickenway.towers.utilities.ManagerController;
 
 public class ConfigurationManager extends ManagerController
 {
 
-    private static Configuration[] configurations = new Configuration[ 3 ];
+    private static Configuration[] configurations = new Configuration[ ConfigName.values().length ];
 
     public ConfigurationManager()
     {
@@ -22,6 +23,7 @@ public class ConfigurationManager extends ManagerController
                     plugin.getDataFolder().getAbsolutePath() );
         StaticConfiguration.load();
         StaticConfiguration.loadGameMode();
+        Lang.loadMessages();
     }
 
     @Override
@@ -34,7 +36,7 @@ public class ConfigurationManager extends ManagerController
     public static enum ConfigName
     {
 
-        MESSAGES, SCOREBOARD, LANG;
+        SCOREBOARD, LANG;
 
         public String getName()
         {

@@ -1,6 +1,6 @@
 #Some messages will not work if the plugin is in Bungee-Mode
-join_arena: '&a%player% &7joined the game (&a%online_players%&7/&a%max_players%&7)'
-leave_arena: '&c%player% &7leave the game (&c%online_players%&7/&c%max_players%&7)'
+join_arena: '&a%player_name% &7joined the game (&a%online_players%&7/&a%max_players%&7)'
+leave_arena: '&c%player_name% &7leave the game (&c%online_players%&7/&c%max_players%&7)'
 arena_full: '&cThe arena is full!'
 arena_finish: '&cThe arena is finished!'
 necessary_players: "&aThe countdown has been cancelled, because the minimum number of players is lower!"
@@ -21,4 +21,4 @@ death:
   by_player: '%player_name% &7was slain by %killer_name%'
   by_projectile: '%player_name% &7was shot by %killer_name% &7from &e%distance% blocks'
   by_unknown: '%player_name% &7died.'
-join_team: 'You joined %color_team%%team_name% TEAM!'
+join_team: '&7You joined %color_team%&l%team_name% TEAM!'

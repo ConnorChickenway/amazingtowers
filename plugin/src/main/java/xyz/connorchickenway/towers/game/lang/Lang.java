@@ -4,15 +4,12 @@ import com.google.common.collect.Lists;
 
 import xyz.connorchickenway.towers.config.ConfigurationManager.ConfigName;
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
-import xyz.connorchickenway.towers.game.lang.utils.MessageUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public enum Lang
 {
@@ -31,7 +28,7 @@ public enum Lang
     DEATH_BY_UNKNOWN( "death.by_unknown", "%player_name% &7died." ),
     UNBALANCED_TEAM( "unbalanced_team", "&cYou cannot join this team because it's unbalanced" ),
     ALREADY_TEAM( "already_team", "&cYou're already on that team" ),
-    JOIN_TEAM( "join_team", "You joined %color_team%%team_name% TEAM!" );
+    JOIN_TEAM( "join_team", "&7You joined %color_team%&l%team_name% TEAM!" );
 
     private String path;
     private String[] def;
@@ -66,31 +63,12 @@ public enum Lang
 
     private String[] getMessage( Map<String, String> placeholders )
     {
-        StringBuilder b = new StringBuilder();
         String[] text = this.get();
-        for ( int i = 0; i < text.length; i++ )
+        String[] newText = new String[text.length];
+        for ( int x = 0; x < text.length; x++ )
         {
-            String f = text[i];
-            if ( !f.isEmpty() )
-            {
-                f = StringUtils.color( f );
-                if ( placeholders != null && !placeholders.isEmpty() )
-                {
-                    Matcher m = StringUtils.PLACEHOLDER_PATTERN.matcher( f );
-                    while( m.find() )
-                    {
-                        String value = placeholders.get( m.group() );
-                        if ( value == null ) continue;
-                        f = f.replaceAll( Pattern.quote( m.group() ),
-                                Matcher.quoteReplacement( value ) );
-                    }
-                }
-                Matcher center = StringUtils.CENTER_PATTERN.matcher( f );
-                if ( center.find() ) f = MessageUtils.convert( f );
-            }
-            b.append( f ).append( ( ++i >= text.length ) ? "" : ";" );
+            newText[ x ] = StringUtils.replacePlaceholders( text[ x ], placeholders );
         }
-        String[] newText = b.toString().split( ";" );
         return newText;
     }
 
@@ -118,7 +96,7 @@ public enum Lang
         {
             String path = value.getPath();
             List<String> list = configuration.isList( path ) ? configuration.getStringList( path )
-                    : Lists.newArrayList();
+                    : Lists.newArrayList();       
             if ( list.isEmpty() )
             {
                 String k = configuration.getString( path );

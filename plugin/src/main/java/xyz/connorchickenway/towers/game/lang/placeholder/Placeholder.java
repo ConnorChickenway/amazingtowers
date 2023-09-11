@@ -28,7 +28,7 @@ public interface Placeholder
     {
         String value = (placeholder instanceof OneArgumentPlaceholder ? 
             ((OneArgumentPlaceholder)placeholder).perform( values[ 0 ] ): 
-            ((TwoArgumentPlaceholder)placeholder).perform( values[ 0 ], values[ 1 ] ));
+            ((TwoArgumentPlaceholder)placeholder).perform( values[ 0 ], values.length >= 2 ? values[ 1 ] : null ) );
         return instance( placeholder.getKey() ,  value );
     }
 
