@@ -3,6 +3,7 @@ package xyz.connorchickenway.towers.game.entity.inventory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scoreboard.Scoreboard;
 
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
 
@@ -14,6 +15,7 @@ public class InventorySession
     private ItemStack[] armorContents, contents;
     private double health;
     private int food;
+    private Scoreboard previousScoreboard;
 
     public InventorySession( GamePlayer gamePlayer )
     {
@@ -28,6 +30,7 @@ public class InventorySession
         this.contents = playerInventory.getContents();
         this.health = player.getHealth();
         this.food = player.getFoodLevel();
+        this.previousScoreboard = player.getScoreboard();
     }
 
     public void load()
@@ -39,6 +42,7 @@ public class InventorySession
         pInventory.setContents( contents );
         player.setHealth( health );
         player.setFoodLevel( food );
+        player.setScoreboard( previousScoreboard );
     }
 
     public void clear()
@@ -47,6 +51,7 @@ public class InventorySession
         this.contents = null;
         this.health = -1;
         this.food = -1;
+        this.previousScoreboard = null;
     }
 
 }
