@@ -6,7 +6,12 @@ import xyz.connorchickenway.towers.game.runnable.util.TaskId;
 public abstract class GameTask extends GameRunnable
 {
 
-    public GameTask( Game game, TaskId taskId, int tick )
+    public GameTask( Game game, TaskId taskId, long tick, boolean async )
+    {
+        super( game, taskId, tick, async );
+    }
+
+    public GameTask( Game game, TaskId taskId, long tick )
     {
         super( game, taskId, tick );
     }

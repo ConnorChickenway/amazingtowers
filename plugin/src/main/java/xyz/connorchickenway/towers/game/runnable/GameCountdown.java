@@ -22,10 +22,13 @@ public abstract class GameCountdown extends GameRunnable
             doStuff();
             cancel();
         } else if ( seconds % 10 == 0 || seconds <= 5 ) broadcast();
+        doPerSecond();
         --seconds;
     }
 
     public abstract void broadcast();
+
+    public abstract void doPerSecond();
 
     public int getSeconds()
     {
