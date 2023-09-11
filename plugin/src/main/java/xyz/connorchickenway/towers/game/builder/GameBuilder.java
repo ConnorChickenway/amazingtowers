@@ -1,22 +1,65 @@
 package xyz.connorchickenway.towers.game.builder;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+
+import org.bukkit.entity.Player;
+
+import com.google.gson.JsonIOException;
+import com.google.gson.annotations.SerializedName;
+
+import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.game.Game;
-import xyz.connorchickenway.towers.game.kit.AbstractKit;
+import xyz.connorchickenway.towers.game.builder.setup.SetupSession;
+import xyz.connorchickenway.towers.game.kit.Kit;
+import xyz.connorchickenway.towers.game.world.BukkitWorldLoader;
+import xyz.connorchickenway.towers.game.world.GameWorld;
+import xyz.connorchickenway.towers.game.world.WorldLoader;
 import xyz.connorchickenway.towers.game.kit.DefaultKit;
 import xyz.connorchickenway.towers.utilities.Cuboid;
+import xyz.connorchickenway.towers.utilities.MetadataUtils;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
 public class GameBuilder 
 {
 
     private String name;
-    private Location lobby, ironGenerator, expGenerator,
-        blueSpawn, redSpawn;
-    private int minPlayers, maxPlayers, count, maxPoints;
-    private AbstractKit abstractKit;
-    private Cuboid redPool, bluePool;
+    private Location lobby;
 
-    private GameBuilder(){}
+    @SerializedName( "iron-generator" ) 
+    private Location ironGenerator; 
+    @SerializedName( "experience-generator" )
+    private Location expGenerator;
+    @SerializedName( "blue-spawn" )
+    private Location blueSpawn; 
+    @SerializedName( "red-spawn" ) 
+    private Location redSpawn;
+    @SerializedName( "min-players" )
+    private int minPlayers;
+    @SerializedName( "max-players" ) 
+    private int maxPlayers;
+    private int count;
+    @SerializedName( "max-points" )
+    private int maxPoints;
+    @SerializedName( "red-pool" )
+    private Cuboid redPool;
+    @SerializedName( "blue-pool" )
+    private Cuboid bluePool;
+    private Kit kit;
+
+    private transient GameWorld gameWorld;
+    @SerializedName( "world-loader" )
+    private WorldLoader worldLoader;
+
+    public GameBuilder()
+    {
+        this.minPlayers = 2;
+        this.maxPlayers = 12;
+        this.count = -1;
+        this.maxPoints = 10;
+    }
 
     public GameBuilder setName( String name )
     {
@@ -29,19 +72,34 @@ public class GameBuilder
         return name;
     }
 
-    public void setLobby( Location lobby )
+    public void setLobby( org.bukkit.Location bukkitLocation )
     {
-        this.lobby = lobby;
+        this.lobby = new Location( bukkitLocation );
     }
     
-    public void setIronGenerator( Location ironGenerator )
+    public Location getLobby()
     {
-        this.ironGenerator = ironGenerator;
+        return lobby;
+    }
+
+    public void setIronGenerator( org.bukkit.Location bukkitLocation )
+    {
+        this.ironGenerator = new Location( bukkitLocation, false );
     }
     
-    public void setExpGenerator( Location expGenerator )
+    public Location getIronGenerator()
     {
-        this.expGenerator = expGenerator;
+        return ironGenerator;
+    }
+    
+    public void setExpGenerator( org.bukkit.Location bukkitLocation )
+    {
+        this.expGenerator = new Location( bukkitLocation, false );
+    }
+    
+    public Location getExpGenerator()
+    {
+        return expGenerator;
     }
     
     public void setMinPlayers( int minPlayers )
@@ -59,16 +117,26 @@ public class GameBuilder
         this.maxPlayers = maxPlayers;
     }
     
-    public void setBlueSpawn( Location blueSpawn )
+    public void setBlueSpawn( org.bukkit.Location bukkitLocation )
     {
-        this.blueSpawn = blueSpawn;
+        this.blueSpawn = new Location( bukkitLocation );
     }
     
-    public void setRedSpawn( Location redSpawn )
+    public Location getBlueSpawn()
     {
-        this.redSpawn = redSpawn;
+        return blueSpawn;
+    }
+
+    public void setRedSpawn( org.bukkit.Location bukkitLocation )
+    {
+        this.redSpawn = new Location( bukkitLocation );
     }
     
+    public Location getRedSpawn()
+    {
+        return redSpawn;
+    }
+
     public int getMaxPlayers()
     {
         return maxPlayers;
@@ -94,9 +162,20 @@ public class GameBuilder
         return maxPoints;
     }
 
-    public void setAbstractKit( AbstractKit abstractKit )
+    public Kit setKit( Kit kit )
     {
-        this.abstractKit = abstractKit;
+        this.kit = kit;
+        return this.kit;
+    }
+    
+    public Kit getKit()
+    {
+        return kit;
+    }
+
+    public boolean hasKit()
+    {
+        return this.kit != null;
     }
     
     public void setBluePool( Cuboid bluePool )
@@ -109,59 +188,39 @@ public class GameBuilder
         this.redPool = redPool;
     }
 
-    public boolean hasName()
+    public void setPool( Cuboid cuboid, Team team )
     {
-        return name != null;
+        if ( team == Team.RED )
+            setRedPool( cuboid );
+        else 
+            setBluePool( cuboid );    
     }
 
-    public boolean hasLobby()
+    public GameBuilder setGameWorld( GameWorld gameWorld )
     {
-        return lobby != null;
+        this.gameWorld = gameWorld;
+        this.worldLoader = (gameWorld instanceof BukkitWorldLoader ? WorldLoader.BUKKIT : WorldLoader.SLIME); 
+        return this;
+    }
+    
+    public GameWorld getGameWorld()
+    {
+        return gameWorld;
+    }
+    
+    public WorldLoader getWorldLoader()
+    {
+        return worldLoader;
     }
 
-    public boolean hasIronGenerator()
+    public boolean hasEverything()
     {
-        return ironGenerator != null;
-    }
-
-    public boolean hasExperienceGenerator()
-    {
-        return expGenerator != null;
-    }
-
-    public boolean hasMinPlayers()
-    {
-        return minPlayers > 0;
-    }
-
-    public boolean hasMaxPlayers()
-    {
-        return maxPlayers > 0;
-    }
-
-    public boolean hasCount()
-    {
-        return count > 0;
-    }
-
-    public boolean hasMaxPoints()
-    {
-        return maxPoints > 0;
-    }
-
-    public boolean hasAbstractKit()
-    {
-        return abstractKit != null;
-    }
-
-    public boolean hasRedPool()
-    {
-        return redPool != null;
-    }
-
-    public boolean hasBluePool()
-    {
-        return bluePool != null;
+        return lobby != null && ironGenerator != null &&
+            expGenerator != null && blueSpawn != null &&
+            redSpawn != null && minPlayers > 0 &&
+            maxPlayers > 0 && count > 0 &&
+            maxPoints > 0 && redPool != null && 
+            bluePool != null;
     }
 
     public Game build()
@@ -170,7 +229,7 @@ public class GameBuilder
         game.setSpawnLocation( lobby );
         game.setIronGenerator( ironGenerator );
         game.setExperienceGenerator( expGenerator );
-        game.setKit( abstractKit != null ? abstractKit : new DefaultKit() );
+        game.setKit( kit != null ? kit : DefaultKit.getInstance() );
         game.setMinPlayers( minPlayers );
         game.setMaxPlayers( maxPlayers );
         game.setCount( count );
@@ -179,7 +238,28 @@ public class GameBuilder
         game.getRed().setSpawnLocation( redSpawn );
         game.getBlue().setPool( bluePool );
         game.getBlue().setSpawnLocation( blueSpawn );
+        game.setGameWorld( gameWorld );
         return game;
+    }
+
+    public void save()
+    {
+        File gameFolder = new File( AmazingTowers.getInstance().getGameManager().getGameFolder(),  name );
+        gameFolder.mkdir();
+        gameWorld.backup();
+        try
+        {
+            Writer fileWriter = new FileWriter( new File( gameFolder, name + ".json" ) );
+            AmazingTowers.GSON.toJson( this, fileWriter );
+            fileWriter.flush();
+            fileWriter.close();
+        } catch ( JsonIOException e )
+        {
+            e.printStackTrace();
+        } catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
     }
 
     public static GameBuilder builder()
@@ -187,4 +267,9 @@ public class GameBuilder
         return new GameBuilder();
     }
     
+    public static SetupSession getSession( Player player )
+    {
+        return ( SetupSession ) MetadataUtils.get( player, "setup-session" );
+    }
+
 }
