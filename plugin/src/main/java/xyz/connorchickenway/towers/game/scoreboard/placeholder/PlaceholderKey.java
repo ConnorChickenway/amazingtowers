@@ -16,7 +16,7 @@ public enum PlaceholderKey
     ONLINE_PLAYERS( gPlayer -> gPlayer.getGame().getOnlinePlayers() ), 
     MAX_PLAYERS( gPlayer -> gPlayer.getGame().getMaxPlayers() ), 
     MAP( gPlayer -> gPlayer.getGame().getGameName() ), 
-    SECONDS( gPlayer -> gPlayer.getGame().getCount() ),
+    SECONDS( gPlayer -> gPlayer.getGame().getRealSeconds() ),
     POINTS_BLUE( gPlayer -> gPlayer.getGame().getBlue().getPoints() ),
     POINTS_RED( gPlayer -> gPlayer.getGame().getRed().getPoints() ),
     MAX_POINTS( gPlayer -> gPlayer.getGame().getMaxPoints() );

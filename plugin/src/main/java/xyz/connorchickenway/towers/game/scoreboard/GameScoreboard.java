@@ -1,5 +1,6 @@
 package xyz.connorchickenway.towers.game.scoreboard;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,13 +38,13 @@ public class GameScoreboard
         List<Line> lines = scoreboardManager.getLines( gameState );
         scoreMap.forEach( (gPlayer, board) -> 
         {
+            List<String> newLines = new ArrayList<>();
             for ( int i = 0; i < lines.size(); i++ ) 
             {
                 Line line = lines.get( i );
-                if ( !line.hasPlaceholders() )
-                    continue;
-                board.updateLine( i , line.getLine( gPlayer ) );    
+                newLines.add( line.hasPlaceholders() ? line.getLine( gPlayer ) : line.getLine() );    
             }
+            board.updateLines( newLines );
         } );
     }
     

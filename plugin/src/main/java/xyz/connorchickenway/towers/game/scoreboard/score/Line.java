@@ -27,7 +27,7 @@ public class Line
     {
         String text = this.text;
         for ( PlaceholderKey key : keys )
-            text = text.replaceAll( key.toString() , key.perform( gPlayer ) );
+            text = text.replaceAll( key.toPlaceholder() , key.perform( gPlayer ) );
         return text;
     }
 
