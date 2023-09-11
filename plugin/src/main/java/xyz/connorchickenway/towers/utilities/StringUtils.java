@@ -1,6 +1,12 @@
 package xyz.connorchickenway.towers.utilities;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,11 +20,28 @@ public class StringUtils
     public static final Pattern PLACEHOLDER_PATTERN = Pattern.compile( "[%]([^%]+)[%]" ), 
             CENTER_PATTERN = Pattern.compile( "[{](center)[}]" );
 
+    public static final String DEFAULT_WORLD_NAME;
+    static 
+    {
+        Properties props = new Properties();
+        try
+        {
+            props.load( new FileInputStream( "server.properties" ) );
+        } catch ( FileNotFoundException e )
+        {
+            e.printStackTrace();
+        } catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
+        DEFAULT_WORLD_NAME = props.getProperty( "level-name" );
+    }
+
     public static String color( String text )
     {
         return ChatColor.translateAlternateColorCodes( '&', text );
     }
-
+    
     public static String replacePlaceholders( String text, Map<String, String> placeholders )
     {
         StringBuilder builder = new StringBuilder();
