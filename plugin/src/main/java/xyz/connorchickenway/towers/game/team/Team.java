@@ -68,7 +68,7 @@ public class Team
                 builder( 
                     pair( PLAYER_NAME , player, chatColor ),
                     pair( COLOR_TEAM, chatColor ),
-                    pair( TEAM_NAME , teamName ) ) );
+                    pair( TEAM_NAME , configName ) ) );
         if ( points >= game.getMaxPoints() ) game.finishArena( this );
     }
 
@@ -76,7 +76,9 @@ public class Team
     {
         if ( players.contains( player.getUniqueId() ) )
         {
-            Lang.ALREADY_TEAM.sendLang( player, null );
+            Lang.ALREADY_TEAM.sendLang( player,
+                    builder( pair( COLOR_TEAM, chatColor ),
+                            pair( TEAM_NAME , configName ) ) );
             return false;
         }
         if ( players.size() > enemyTeam )
@@ -179,12 +181,10 @@ public class Team
     public int getSizeOnline()
     {
         int i = 0;
-        Iterator<UUID> iterator = players.iterator();
-        while( iterator.hasNext() )
+        for ( UUID uuid : players )
         {
-            GamePlayer player = EntityManager.getPlayer( iterator.next() );
-            if ( player != null && player.isInGame( game ) ) 
-                ++i;
+            GamePlayer player = EntityManager.getPlayer( uuid );
+            if ( player != null && player.isInGame( game ) ) ++i;
         }
         return i;
     }

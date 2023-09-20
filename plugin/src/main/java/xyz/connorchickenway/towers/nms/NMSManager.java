@@ -35,6 +35,7 @@ public class NMSManager extends ManagerController
                 nms = new VersionSupport_1_12_R1();
                 break;    
             default:
+                nms = new EmptyNMS();
                 break;
         }
     }

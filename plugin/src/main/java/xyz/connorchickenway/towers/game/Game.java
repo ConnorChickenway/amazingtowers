@@ -40,6 +40,7 @@ import xyz.connorchickenway.towers.game.sign.GameSign;
 import xyz.connorchickenway.towers.game.state.GameState;
 import xyz.connorchickenway.towers.game.team.Team;
 import xyz.connorchickenway.towers.game.world.GameWorld;
+import xyz.connorchickenway.towers.nms.NMSManager;
 import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.ItemUtils;
@@ -64,7 +65,7 @@ public class Game
     private Location lobby, ironGenerator, expGenerator;
     private int minPlayers, maxPlayers, count, maxPoints;
     private GameSign gameSign;
-    private GameScoreboard gameScoreboard;
+    private final GameScoreboard gameScoreboard;
 
     private Game( String gameName )
     {
@@ -198,12 +199,11 @@ public class Game
         if ( gameRunnable != null )
         {
             gameRunnable.startTimer( false );
-        } else 
-        newRunnable( new GameCountdown( this, TaskId.START_COUNTDOWN, count ) 
+        } else newRunnable( new GameCountdown( this, TaskId.START_COUNTDOWN, count )
         {
 
             @Override
-            public void doStuff() 
+            public void doStuff()
             {
                 //STATE
                 state = GameState.GAME;
@@ -215,12 +215,12 @@ public class Game
             }
 
             @Override
-            public void broadcast() 
+            public void broadcast()
             {
-                message( Lang.GAME_START, 
+                message( Lang.GAME_START,
                     Placeholder.builder(
                         pair( COUNT ,  this.getSeconds() ),
-                        pair( SECONDS , this.getSeconds() ) ) );     
+                        pair( SECONDS , this.getSeconds() ) ) );
             }
 
             @Override
@@ -228,7 +228,7 @@ public class Game
             {
                 updateScoreboard();
             }
-            
+
         } );
         if ( gameSign != null )
             gameSign.update();
@@ -336,7 +336,7 @@ public class Game
                     reloadArena();
                 };
 
-                AtomicInteger counter = new AtomicInteger( 0 ); 
+                final AtomicInteger counter = new AtomicInteger( 0 );
                 @Override
                 public boolean cancelTask() 
                 {
@@ -357,10 +357,8 @@ public class Game
 
     private void teleportPlayers( Team winnerTeam )
     {
-        Iterator<GamePlayer> iterator = players.iterator();
-        while( iterator.hasNext() )
+        for ( GamePlayer gPlayer : players )
         {
-            GamePlayer gPlayer = iterator.next();
             leave( gPlayer, false );
             if ( GameMode.isMultiArena() )
             {
@@ -370,8 +368,7 @@ public class Game
                     gPlayer.toBukkitPlayer().teleport( location.toBukkitLocation() );
                     return;
                 }
-            }else 
-                gPlayer.toBukkitPlayer().kickPlayer( getWinnerMessage( winnerTeam ) );
+            } else gPlayer.toBukkitPlayer().kickPlayer( getWinnerMessage( winnerTeam ) );
         }
     }
 
@@ -413,19 +410,19 @@ public class Game
                     pair( PLAYER_NAME, player, getChatColor( player ) ),
                     pair( KILLER_NAME,  killer, getChatColor( killer ) )
                 ) );
-
-            return;
         }
-        message( Lang.DEATH_BY_UNKNOWN, builder(  
-                pair( PLAYER_NAME , player, getChatColor( player ) )   
+        else
+        {
+            message( Lang.DEATH_BY_UNKNOWN, builder(
+                    pair( PLAYER_NAME , player, getChatColor( player ) )
             ) );
+        }
         if ( StaticConfiguration.drop_armor )
             for ( ItemStack itemStack : event.getDrops() )
                 if ( ItemUtils.isArmorLeather( itemStack.getType() ) )
                     itemStack.setType( Material.AIR );
         if ( StaticConfiguration.instant_respawn )
-            Bukkit.getScheduler().runTaskLater( AmazingTowers.getInstance(), () -> 
-                player.spigot().respawn(), 2L );    
+            NMSManager.get().getNMS().respawn ( player, AmazingTowers.getInstance() );   
     }
 
     public void respawn( PlayerRespawnEvent event )
@@ -474,17 +471,16 @@ public class Game
         StringBuilder builder = new StringBuilder();
         String[] text = Lang.WIN_FOR_TEAM.get();
         boolean previousEmpty = false;
-        for ( int x = 0; x < text.length; x++ )
+        for ( String t : text )
         {
-            String t = text[x];
             if ( t.isEmpty() )
             {
                 if ( !previousEmpty ) builder.append( "\n" );
                 previousEmpty = true;
             } else
             {
-                builder.append(
-                        StringUtils.replacePlaceholders( t, builder( pair( COLOR_TEAM, winnerTeam.getChatColor() ),
+                builder.append( StringUtils.replacePlaceholders( t,
+                        builder( pair( COLOR_TEAM, winnerTeam.getChatColor() ),
                                 pair( TEAM_NAME, winnerTeam.getConfigName() ) ) ) );
                 builder.append( "\n" );
                 previousEmpty = false;
@@ -547,9 +543,7 @@ public class Game
 
     public boolean hasTeam( UUID id )
     {
-        if ( red.isInTeam( id ) || 
-                blue.isInTeam( id ) ) return true;
-        return false;
+        return red.isInTeam( id ) || blue.isInTeam( id );
     }
 
     public void message( Lang lang, Map<String, String> placeholderMap )

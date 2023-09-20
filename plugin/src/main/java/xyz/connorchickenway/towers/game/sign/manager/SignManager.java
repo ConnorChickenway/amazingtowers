@@ -61,7 +61,7 @@ public class SignManager extends ManagerController implements Listener
         {
             Block block = event.getClickedBlock();
             if ( block.getWorld() != spawnLocation.getWorld() ) return;
-            if ( block == null || !isWallSign( block ) ) return;
+            if ( !isWallSign( block ) ) return;
             Player player = event.getPlayer();
             GameSign gameSign = get( block.getLocation() );
             if ( gameSign != null )

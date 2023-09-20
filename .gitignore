@@ -21,3 +21,6 @@ gradle-app.setting
 
 #Ignore bin files
 bin/
+
+#Ignore intellij files
+.idea
