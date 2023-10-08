@@ -72,8 +72,9 @@ public interface Placeholder
         @Override
         public String perform( Object obj )
         {
-            Player player = (Player)obj;
-            return Double.toString( player.getLocation().distanceSquared( player.getKiller().getLocation() ) );
+            Player player = ( Player ) obj;
+            double distance = player.getLocation().distanceSquared( player.getKiller().getLocation() );
+            return Long.toString( Math.round( Math.sqrt( distance ) ) );
         }
         
     };
