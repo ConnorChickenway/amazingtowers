@@ -15,11 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -40,10 +36,9 @@ import xyz.connorchickenway.towers.utilities.location.Location;
 public class GameListener implements Listener
 {
 
-    private AmazingTowers plugin = AmazingTowers.getInstance();
-    private ItemStack lapislazuli;
+    private final AmazingTowers plugin = AmazingTowers.getInstance();
+    private final ItemStack lapislazuli;
 
-    @SuppressWarnings( "deprecation" )
     public GameListener()
     {
         if ( NMSVersion.isNewerVersion )
@@ -201,6 +196,15 @@ public class GameListener implements Listener
         Inventory inventory = event.getInventory();
         if ( !( inventory instanceof EnchantingInventory ) ) return;
         inventory.setItem( 1, lapislazuli );
+    }
+
+    @EventHandler
+    public void onDropItem( PlayerDropItemEvent event )
+    {
+        if ( !StaticConfiguration.drop_armor ) return;
+        ItemStack itemStack = event.getItemDrop().getItemStack();
+        if ( ItemUtils.isArmorLeather( itemStack.getType() ) )
+            itemStack.setType( Material.AIR );
     }
 
     @EventHandler
