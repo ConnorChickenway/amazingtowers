@@ -1,10 +1,7 @@
 package xyz.connorchickenway.towers.game;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,10 +39,7 @@ import xyz.connorchickenway.towers.game.team.Team;
 import xyz.connorchickenway.towers.game.world.GameWorld;
 import xyz.connorchickenway.towers.nms.NMSManager;
 import xyz.connorchickenway.towers.nms.NMSVersion;
-import xyz.connorchickenway.towers.utilities.GameMode;
-import xyz.connorchickenway.towers.utilities.ItemUtils;
-import xyz.connorchickenway.towers.utilities.MetadataUtils;
-import xyz.connorchickenway.towers.utilities.StringUtils;
+import xyz.connorchickenway.towers.utilities.*;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
 import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.*;
@@ -357,19 +351,19 @@ public class Game
 
     private void teleportPlayers( Team winnerTeam )
     {
-        for ( GamePlayer gPlayer : players )
+        players.forEach( gamePlayer ->
         {
-            leave( gPlayer, false );
+            leave( gamePlayer, false );
+           Player player = gamePlayer.toBukkitPlayer();
             if ( GameMode.isMultiArena() )
             {
                 Location location = StaticConfiguration.spawn_location;
                 if ( location != null )
                 {
-                    gPlayer.toBukkitPlayer().teleport( location.toBukkitLocation() );
-                    return;
+                    location.teleport( player );
                 }
-            } else gPlayer.toBukkitPlayer().kickPlayer( getWinnerMessage( winnerTeam ) );
-        }
+            } else player.kickPlayer( getWinnerMessage( winnerTeam ) );
+        });
     }
 
     public void reloadArena() 
