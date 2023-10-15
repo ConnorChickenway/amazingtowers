@@ -31,7 +31,7 @@ public class SlimeWorldLoader implements GameWorld
     @Override
     public boolean load()
     {
-        SlimeLoader loader = SLIME_PLUGIN.getLoader( "file" );
+        SlimeLoader loader = getLoader();
         try
         {
             SlimeWorld slimeWorld = SLIME_PLUGIN.loadWorld( loader, worldName, true, getProperties() );
@@ -44,7 +44,7 @@ public class SlimeWorldLoader implements GameWorld
     @Override
     public boolean unload( boolean save )
     {
-        SlimeLoader loader = SLIME_PLUGIN.getLoader( "file" );
+        SlimeLoader loader = getLoader();
         try
         {
             Bukkit.unloadWorld( worldName, save );
