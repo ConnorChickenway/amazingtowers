@@ -131,13 +131,14 @@ public class Game
 
     public void leave( GamePlayer gamePlayer, boolean leaveMessage )
     {
+        Player player = gamePlayer.toBukkitPlayer();
         players.remove( gamePlayer );
         gamePlayer.setGame( null );
         gameScoreboard.remove( gamePlayer );
-        MetadataUtils.remove( gamePlayer.toBukkitPlayer(), "items-game" );
+        MetadataUtils.remove( player, "items-game" );
         if ( leaveMessage )
             message( Lang.LEAVE_ARENA, builder( 
-                pair( PLAYER_NAME, gamePlayer.toBukkitPlayer() ),
+                pair( PLAYER_NAME, player ),
                 pair( ONLINE_PLAYERS, players.size() ) ,
                 pair( MAX_PLAYERS, maxPlayers ) ) );
         switch( state )
@@ -354,7 +355,7 @@ public class Game
         players.forEach( gamePlayer ->
         {
             leave( gamePlayer, false );
-           Player player = gamePlayer.toBukkitPlayer();
+            Player player = gamePlayer.toBukkitPlayer();
             if ( GameMode.isMultiArena() )
             {
                 Location location = StaticConfiguration.spawn_location;
