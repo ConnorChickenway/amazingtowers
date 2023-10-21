@@ -21,13 +21,13 @@ public enum Lang
             "&aThe countdown has been cancelled, because the minimum number of players is lower!" ),
     GAME_START( "game_start", "&eThe game starts in &c%count% &e%seconds%!" ), SECONDS( "seconds", "second::seconds" ),
     POINT_FOR_TEAM( "point_scored", "", "{center}%color_team%&l♦  %color_team%%player_name% &7scored point for %color_team%&l%team_name%!  %color_team%&l♦", "" ),
-    WIN_FOR_TEAM( "win", "", "{center}%color_team%&l%team_name% Team has won the game!", "" ),
+    WIN_FOR_TEAM( "win", "", "{center}%color_team%&l%team_name% TEAM &7has won the game!", "" ),
     DEATH_BY_PLAYER( "death.by_player", "%player_name% &7was slain by %killer_name%" ),
     DEATH_BY_PROJECTILE( "death.by_projectile",
             "%player_name% &7was shot by %killer_name% &7from &e%distance% blocks" ),
     DEATH_BY_UNKNOWN( "death.by_unknown", "%player_name% &7died." ),
     UNBALANCED_TEAM( "unbalanced_team", "&cYou cannot join this team because it's unbalanced" ),
-    ALREADY_TEAM( "already_team", "&cYou're already on that team" ),
+    ALREADY_TEAM( "already_team", "&7You're already on %color_team%&l%team_name% TEAM!" ),
     JOIN_TEAM( "join_team", "&7You joined %color_team%&l%team_name% TEAM!" );
 
     private String path;

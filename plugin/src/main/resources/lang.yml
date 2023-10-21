@@ -6,8 +6,8 @@ arena_finish: '&cThe arena is finished!'
 necessary_players: "&aThe countdown has been cancelled, because the minimum number of players is lower!"
 game_start: '&eThe game starts in &c%count% &e%seconds%!'
 seconds: 'second::seconds'
-unbalenced_team: "&cYou cannot join this team because it's unbalanced"
-already_team: "&cYou're already on %color_team%%team_name% TEAM!"
+unbalanced_team: "&cYou cannot join this team because it's unbalanced"
+already_team: "&7You're already on %color_team%&l%team_name% TEAM!"
 already_game: "&cYou're already on a game!"
 point_scored:
   - ''
@@ -15,7 +15,7 @@ point_scored:
   - ''
 win:
   - ''
-  - '{center}%color_team%&l%team_name% Team has won the game!'
+  - '{center}%color_team%&l%team_name% TEAM &7has won the game!'
   - ''
 death:
   by_player: '%player_name% &7was slain by %killer_name%'
