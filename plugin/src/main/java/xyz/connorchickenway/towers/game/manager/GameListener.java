@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -25,13 +26,17 @@ import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.Game;
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
+import xyz.connorchickenway.towers.game.lang.Lang;
 import xyz.connorchickenway.towers.game.state.GameState;
 import xyz.connorchickenway.towers.game.team.Team;
 import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.ItemUtils;
 import xyz.connorchickenway.towers.utilities.MetadataUtils;
+import xyz.connorchickenway.towers.utilities.Pair;
 import xyz.connorchickenway.towers.utilities.location.Location;
+
+import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.*;
 
 public class GameListener implements Listener
 {
@@ -89,7 +94,7 @@ public class GameListener implements Listener
             ( ( HumanEntity ) entity ).setHealth( 0.0D );
             return;
         }    
-        if ( game.isLobby() || !game.hasTeam( entity.getUniqueId() ) )
+        if ( !game.isState( GameState.GAME ) || !game.hasTeam( entity.getUniqueId() ) )
             event.setCancelled( true );
     }
 
@@ -106,7 +111,6 @@ public class GameListener implements Listener
         {
             Game game = gPlayer.getGame();
             if ( game.isState( GameState.FINISH ) ) return;
-            boolean isQuit = false;
             if ( itemStack.equals( ItemUtils.quitItem ) )
             {
                 if ( GameMode.isMultiArena() )
@@ -118,55 +122,60 @@ public class GameListener implements Listener
                 {
 
                 }
-                isQuit = true;
+                event.setCancelled( true );
             }
-            if ( !isQuit )
+            else
             {
-                ItemStack[] items = ( ItemStack[] ) MetadataUtils.get( player, "items-game" );
-                Team previousTeam = game.getTeam(  player.getUniqueId() );
-                boolean joined = false;
-                if ( itemStack.equals( items[ 0 ] ) )
-                {    
-                    joined = game.getRed().addPlayer( player, game.getBlue().getSizeOnline() );
-                    if ( game.isLobby() )
+                Team currentTeam = game.getTeam( player.getUniqueId() ),
+                        itemTeam = game.getTeam( itemStack );
+                if ( currentTeam != itemTeam )
+                {
+                    boolean canJoin = false;
+                    Team enemyTeam = game.getEnemyTeam( itemTeam );
+                    if ( enemyTeam.isInTeam( player.getUniqueId() ) )
                     {
-                        if ( joined )
+                        if ( enemyTeam.getSizeOnline() > itemTeam.getSizeOnline() )
+                            canJoin = true;
+                        else
+                            Lang.UNBALANCED_TEAM.sendLang( player, null );
+                    }
+                    else if ( enemyTeam.getSizeOnline() >= itemTeam.getSizeOnline() )
+                        canJoin = true;
+                    else
+                        Lang.UNBALANCED_TEAM.sendLang( player, null );
+                    if ( canJoin )
+                    {
+                        Pair<ItemStack, Integer> currentItem = ItemUtils.getItem( player, itemTeam ),
+                            enemyItem = ItemUtils.getItem( player, enemyTeam );
+                        if ( currentTeam != null )
                         {
-                            if ( items[1].getEnchantments().size() >= 1 )
+                            currentTeam.remove( player.getUniqueId() );
+                        }
+                        if ( enemyItem != null )
+                        {
+                            ItemStack enemyStack = enemyItem.getKey();
+                            if ( !enemyStack.getEnchantments().isEmpty() )
                             {
-                                ItemUtils.removeGlow( items[1] );
-                                player.getInventory().setItem( StaticConfiguration.blue_position, items[1] );
+                                ItemUtils.removeGlow( enemyStack );
+                                player.getInventory().setItem( enemyItem.getValue(), enemyStack );
                             }
-                            ItemUtils.setGlow( items[0] );
-                            player.getInventory().setItem( StaticConfiguration.red_position, items[0] );
+                        }
+                        if ( currentItem != null )
+                        {
+                            ItemUtils.setGlow( currentItem.getKey() );
+                            player.getInventory().setItem( currentItem.getValue(), currentItem.getKey() );
                             player.updateInventory();
                         }
+                        itemTeam.addPlayer( player );
                     }
                 }
-                else if ( itemStack.equals( items[1] ) )
-                {   
-                    joined = game.getBlue().addPlayer( player, game.getRed().getSizeOnline() );
-                    if ( game.isLobby() )
-                    {
-                        if ( joined )
-                        {
-                            if ( items[0].getEnchantments().size() >= 1 )
-                            {
-                                ItemUtils.removeGlow( items[0] );
-                                player.getInventory().setItem( StaticConfiguration.red_position, items[0] );
-                            }
-                            ItemUtils.setGlow( items[1] );
-                            player.getInventory().setItem( StaticConfiguration.blue_position, items[1] );
-                            player.updateInventory();
-                        }
-                    }
-                }                    
-                if ( joined )
-                    if ( previousTeam != null )
-                        previousTeam.remove( player.getUniqueId() );        
+                else
+                {
+                    Lang.ALREADY_TEAM.sendLang( player,
+                            builder( pair( COLOR_TEAM, currentTeam.getChatColor() ),
+                                    pair( TEAM_NAME , currentTeam.getConfigName() ) ) );
+                }
             }
-            
-            event.setCancelled( true );
         }
     }
 
@@ -226,7 +235,7 @@ public class GameListener implements Listener
         }
     }
 
-    /**@EventHandler( priority =  EventPriority.MONITOR ) 
+    @EventHandler( priority =  EventPriority.MONITOR )
     public void onBreak( BlockBreakEvent event )
     {
         if ( event.isCancelled() ) return;
@@ -235,10 +244,10 @@ public class GameListener implements Listener
         if ( gPlayer.isInGame() )
         {
             Game game = gPlayer.getGame();
-            if ( game.isState( GameState.LOBBY ) || game.isState( GameState.STARTING ) || !game.hasTeam( player.getUniqueId() ) )
+            if ( game.isState( GameState.GAME ) && game.hasTeam( gPlayer.getUniqueId() ) ) return;
             event.setCancelled( true );
         }
-    }**/
+    }
 
     @EventHandler
     public void onJoin( PlayerJoinEvent event )

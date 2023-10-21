@@ -3,10 +3,13 @@ package xyz.connorchickenway.towers.utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import xyz.connorchickenway.towers.config.StaticConfiguration;
+import xyz.connorchickenway.towers.game.team.Team;
 
 public class ItemUtils 
 {
@@ -61,5 +64,30 @@ public class ItemUtils
         meta.removeItemFlags( ItemFlag.HIDE_ENCHANTS );
         itemStack.setItemMeta( meta );
     }
-    
+
+    public static boolean isBlueItem( ItemStack itemStack )
+    {
+        if ( itemStack != null )
+            return itemStack.getItemMeta().getDisplayName().equals( blueItem.getItemMeta().getDisplayName() ) &&
+                itemStack.getType() == blueItem.getType();
+        return false;
+    }
+
+    public static boolean isRedItem( ItemStack itemStack )
+    {
+        if ( itemStack != null )
+            return itemStack.getItemMeta().getDisplayName().equals( redItem.getItemMeta().getDisplayName() ) &&
+                itemStack.getType() == redItem.getType();
+        return false;
+    }
+
+    public static Pair<ItemStack, Integer> getItem( Player player, Team team )
+    {
+        ItemStack[] items = ( ItemStack[] ) MetadataUtils.get( player, "items-game" );
+        if ( items == null ) return null;
+        if ( team.getTeamName().equals( "red" ) )
+            return new Pair<>( items[ 0 ], StaticConfiguration.red_position );
+        return new Pair<>( items[ 1 ], StaticConfiguration.blue_position );
+    }
+
 }

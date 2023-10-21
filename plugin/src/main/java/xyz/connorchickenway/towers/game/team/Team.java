@@ -72,28 +72,11 @@ public class Team
         if ( points >= game.getMaxPoints() ) game.finishArena( this );
     }
 
-    public boolean addPlayer( Player player, int enemyTeam )
+    public void addPlayer( Player player )
     {
-        if ( players.contains( player.getUniqueId() ) )
-        {
-            Lang.ALREADY_TEAM.sendLang( player,
-                    builder( pair( COLOR_TEAM, chatColor ),
-                            pair( TEAM_NAME , configName ) ) );
-            return false;
-        }
-        if ( players.size() > enemyTeam )
-        {
-            Lang.UNBALANCED_TEAM.sendLang( player, null );
-            return false;
-        }
         players.add( player.getUniqueId() );
-        Lang.JOIN_TEAM.sendLang( player, 
-            builder( 
-                pair( TEAM_NAME, configName ),
-                pair( COLOR_TEAM, chatColor )
-             ) );
+        Lang.JOIN_TEAM.sendLang( player, builder( pair( TEAM_NAME, configName ), pair( COLOR_TEAM, chatColor ) ) );
         if ( game.isState( GameState.GAME ) ) doStuff( player, true );
-        return true;
     }
 
     public void launchFireworks()
@@ -106,7 +89,8 @@ public class Team
         final Firework f = player.getLocation().getWorld().spawn( player.getLocation(), ( Firework.class ) );
         f.detonate();
         final FireworkMeta fm = f.getFireworkMeta();
-        fm.addEffect( FireworkEffect.builder().flicker( false ).trail( true ).with( FireworkEffect.Type.BALL ).withColor( color ).withFade( color ).build() );
+        fm.addEffect( FireworkEffect.builder().flicker( false ).trail( true ).with( FireworkEffect.Type.BALL )
+                .withColor( color ).withFade( color ).build() );
         fm.setPower( 1 );
         f.setFireworkMeta( fm );
     }

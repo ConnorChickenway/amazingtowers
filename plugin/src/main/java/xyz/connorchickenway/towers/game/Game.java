@@ -529,11 +529,27 @@ public class Game
         return null;
     }
 
+    public Team getTeam( ItemStack itemStack )
+    {
+        if ( ItemUtils.isBlueItem( itemStack ) )
+            return blue;
+        else if ( ItemUtils.isRedItem( itemStack ) )
+            return red;
+        return null;
+    }
+
     public Team getEnemyTeam( UUID id )
     {
         if ( !this.hasTeam( id  ) ) return null;
         if ( red.isInTeam( id ) ) return blue;
-        else return red;
+        return red;
+    }
+
+    public Team getEnemyTeam( Team team )
+    {
+        if ( team == null ) return null;
+        if ( red.equals( team ) ) return blue;
+        return red;
     }
 
     public boolean hasTeam( UUID id )
