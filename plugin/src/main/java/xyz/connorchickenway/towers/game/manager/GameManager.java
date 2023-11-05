@@ -33,9 +33,9 @@ import xyz.connorchickenway.towers.utilities.StringUtils;
 public class GameManager extends ManagerController
 {
 
-    private Map<String, Game> games = Maps.newHashMap();
+    private final Map<String, Game> games = Maps.newHashMap();
     private SignManager signManager;
-    private File gameFolder;
+    private final File gameFolder;
 
     public GameManager( AmazingTowers plugin )
     {
@@ -84,21 +84,20 @@ public class GameManager extends ManagerController
                     }
                     GameWorld gameWorld = gBuilder.getWorldLoader() == WorldLoader.BUKKIT ? new BukkitWorldLoader( gBuilder.getName() ) :   
                         AmazingTowers.SLIME_PLUGIN != null ? new SlimeWorldLoader( gBuilder.getName() ) : null;
-                    Logger.info( gBuilder.getName() );    
                     if ( gameWorld != null )
                     {
                         boolean load = gameWorld.load();
                         if ( !load )
                         {
-                            Logger.info( "cannot load" );
+                            Logger.info( "Cannot load " + gBuilder.getName() + " world.!" );
                             continue;
                         }
                         gBuilder.setGameWorld( gameWorld );
-                        Logger.info( "world loaded.! " + gBuilder.getName() );
+                        Logger.info( "World loaded.! " + gBuilder.getName() );
                     }
                     else 
                     {
-                        Logger.info( "cannot load | variable is null" );
+                        Logger.info( "Cannot load " + gBuilder.getName() + " | variable is null" );
                         continue;
                     }
                     Game game = gBuilder.build();
@@ -128,12 +127,12 @@ public class GameManager extends ManagerController
                                         gameSign.update();
                                         signManager.add( gameSign );
                                     }else 
-                                        Logger.info( "Could not load the block because it's not a sign." );
+                                        Logger.info( "Could not load the block because it's not a sign. Arena: " + gBuilder.getName() );
                                 }    
                             }
                         }catch( Exception ex ) 
                         {
-                            Logger.info( "Could not load the sign file because it lacks of data.!" );
+                            Logger.info( "Could not load the sign file because it lacks of data. " + gBuilder.getName() + ".sign file.!" );
                         }
                         if ( dataInputStream != null )
                             dataInputStream.close();
