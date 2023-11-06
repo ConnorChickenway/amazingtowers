@@ -14,6 +14,11 @@ public class Logger
         logger.info( info );
     }
 
+    public static void severe( String m )
+    {
+        logger.severe( m );
+    }
+
     public static void error( String info, Exception ex )
     {
         logger.log( Level.WARNING, info, ex );

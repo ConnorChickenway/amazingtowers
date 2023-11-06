@@ -77,7 +77,7 @@ public class StaticConfiguration
             if ( world != null )
                 world.setSpawnLocation( spawn_location.toBukkitLocation() );
         }
-        server_name = config.getString( "options.bungeemode.server_name", "towers_lobby" );
+        server_name = config.getString( "options.bungee-mode.server_name", "towers_lobby" );
         /** SIGN **/
         final String signLocation = "options.multiarena.sign"; 
         attached_sign_material = config.getString( signLocation + ".attached.material" , "STAINED_GLASS" );

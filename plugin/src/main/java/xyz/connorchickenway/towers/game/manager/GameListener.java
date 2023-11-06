@@ -30,10 +30,7 @@ import xyz.connorchickenway.towers.game.lang.Lang;
 import xyz.connorchickenway.towers.game.state.GameState;
 import xyz.connorchickenway.towers.game.team.Team;
 import xyz.connorchickenway.towers.nms.NMSVersion;
-import xyz.connorchickenway.towers.utilities.GameMode;
-import xyz.connorchickenway.towers.utilities.ItemUtils;
-import xyz.connorchickenway.towers.utilities.MetadataUtils;
-import xyz.connorchickenway.towers.utilities.Pair;
+import xyz.connorchickenway.towers.utilities.*;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
 import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.*;
@@ -120,7 +117,9 @@ public class GameListener implements Listener
                     if ( lobby != null ) lobby.teleport( player );
                 } else
                 {
-
+                    final String serverName = StaticConfiguration.server_name;
+                    if ( serverName == null || serverName.isEmpty() ) return;
+                    BungeecordUtils.sendPlayerToServer( player, serverName );
                 }
                 event.setCancelled( true );
             }

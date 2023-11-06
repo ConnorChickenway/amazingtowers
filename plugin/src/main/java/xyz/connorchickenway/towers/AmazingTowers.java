@@ -20,6 +20,8 @@ import xyz.connorchickenway.towers.game.manager.GameManager;
 import xyz.connorchickenway.towers.game.scoreboard.manager.ScoreboardManager;
 import xyz.connorchickenway.towers.nms.NMSManager;
 import xyz.connorchickenway.towers.utilities.Cuboid;
+import xyz.connorchickenway.towers.utilities.GameMode;
+import xyz.connorchickenway.towers.utilities.Logger;
 import xyz.connorchickenway.towers.utilities.location.Location;
 
 public class AmazingTowers extends JavaPlugin
@@ -36,13 +38,16 @@ public class AmazingTowers extends JavaPlugin
     public void onEnable()
     {
         instance = this;
+        this.configurationManager = new ConfigurationManager();
+        if ( GameMode.isBungeeMode() )
+            if ( checkIfBungee() )
+                getServer().getMessenger().registerOutgoingPluginChannel( this, "BungeeCord" );
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents( new SetupListener(), this );
         if ( pm.isPluginEnabled( "SlimeWorldManager" ) )
         {
             SLIME_PLUGIN = ( SlimePlugin ) pm.getPlugin( "SlimeWorldManager" );
         }
-        this.configurationManager = new ConfigurationManager();
         this.commandManager = new CommandManager( this );
         this.nmsManager = new NMSManager( this );
         this.entityManager = new EntityManager( this );
@@ -63,6 +68,17 @@ public class AmazingTowers extends JavaPlugin
         this.commandManager.disable();
         this.nmsManager.disable();
         this.entityManager.disable();
+    }
+
+    private boolean checkIfBungee()
+    {
+        if ( !getServer().spigot().getConfig().getConfigurationSection("settings").getBoolean( "bungeecord" ) )
+        {
+            Logger.severe( "This server is not BungeeCord." );
+            Logger.severe( "If the server is already hooked to BungeeCord, please enable it into your spigot.yml aswell." );
+            return false;
+        }
+        return true;
     }
 
     public ConfigurationManager getConfigurationManager()

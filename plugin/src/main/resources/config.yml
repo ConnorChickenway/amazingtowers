@@ -41,7 +41,7 @@ options:
       - '&nMap: %map%'
       - '&7%online_players%/%max_players%'
 
-  bungeemode:
+  bungee-mode:
     server_name: 'towers_lobby'
 
 items:
