@@ -16,6 +16,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.google.common.collect.Maps;
@@ -126,7 +127,9 @@ public class Game
         message( Lang.JOIN_ARENA,
                 builder( pair( PLAYER_NAME, player ),
                         pair( ONLINE_PLAYERS , players.size() ),
-                        pair( MAX_PLAYERS, maxPlayers ) ) );    
+                        pair( MAX_PLAYERS, maxPlayers ) ) );
+        for ( PotionEffect effect : player.getActivePotionEffects() )
+            player.removePotionEffect( effect.getType() );
     } 
 
     public void leave( GamePlayer gamePlayer, boolean leaveMessage )
@@ -185,6 +188,8 @@ public class Game
         }
         if ( gameSign != null )
             gameSign.update();
+        for ( PotionEffect effect : player.getActivePotionEffects() )
+            player.removePotionEffect( effect.getType() );
     }
 
     public void startArena() 
