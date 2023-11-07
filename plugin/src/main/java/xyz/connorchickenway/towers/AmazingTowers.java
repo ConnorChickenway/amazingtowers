@@ -23,11 +23,13 @@ import xyz.connorchickenway.towers.utilities.Cuboid;
 import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.Logger;
 import xyz.connorchickenway.towers.utilities.location.Location;
+import xyz.connorchickenway.towers.utilities.vault.VaultManager;
 
 public class AmazingTowers extends JavaPlugin
 {
 
     private ConfigurationManager configurationManager;
+    private VaultManager vaultManager;
     private CommandManager commandManager;
     private NMSManager nmsManager;
     private EntityManager entityManager;
@@ -39,9 +41,12 @@ public class AmazingTowers extends JavaPlugin
     {
         instance = this;
         this.configurationManager = new ConfigurationManager();
+        this.configurationManager.load();
         if ( GameMode.isBungeeMode() )
             if ( checkIfBungee() )
                 getServer().getMessenger().registerOutgoingPluginChannel( this, "BungeeCord" );
+        this.vaultManager = new VaultManager( this );
+        this.vaultManager.load();
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents( new SetupListener(), this );
         if ( pm.isPluginEnabled( "SlimeWorldManager" ) )
@@ -53,7 +58,6 @@ public class AmazingTowers extends JavaPlugin
         this.entityManager = new EntityManager( this );
         this.gameManager = new GameManager( this );
         this.scoreboardManager = new ScoreboardManager( this );
-        this.configurationManager.load();
         this.commandManager.load();
         this.nmsManager.load();
         this.entityManager.load();
@@ -84,6 +88,11 @@ public class AmazingTowers extends JavaPlugin
     public ConfigurationManager getConfigurationManager()
     {
         return configurationManager;
+    }
+
+    public VaultManager getVaultManager()
+    {
+        return vaultManager;
     }
 
     public NMSManager getNMSManager()

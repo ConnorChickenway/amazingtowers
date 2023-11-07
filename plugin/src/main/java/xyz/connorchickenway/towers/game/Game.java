@@ -447,7 +447,8 @@ public class Game
         if ( state == GameState.LOBBY || state == GameState.STARTING || !hasTeam( player.getUniqueId() ) )
         {
             message.set( StringUtils.replacePlaceholders( StaticConfiguration.normal_format, 
-                builder( 
+                builder(
+                    pair( PREFIX, player ),
                     pair( PLAYER_NAME, player ),
                     pair( MESSAGE, eventMsg )
                 ) ) );
@@ -456,7 +457,7 @@ public class Game
         }   
         Team team = getTeam( player.getUniqueId() );
         message.set( StringUtils.replacePlaceholders( StaticConfiguration.team_format, 
-            builder( 
+            builder( pair( PREFIX, player ),
                 pair( PLAYER_NAME, player ),
                 pair( MESSAGE, eventMsg ),
                 pair( COLOR_TEAM, getChatColor( player ) ),

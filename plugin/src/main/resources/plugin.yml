@@ -3,7 +3,7 @@ version: 0.1
 author: ConnorChickenway
 main: xyz.connorchickenway.towers.AmazingTowers
 api-version: 1.13
-softdepend: ["SlimeWorldManager"]
+softdepend: ["SlimeWorldManager", "Vault"]
 commands:
   towers:
 libraries: 

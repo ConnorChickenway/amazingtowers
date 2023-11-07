@@ -5,8 +5,11 @@ import java.util.Map;
 
 import org.bukkit.entity.Player;
 
+import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.game.lang.Lang;
 import xyz.connorchickenway.towers.utilities.Pair;
+import xyz.connorchickenway.towers.utilities.StringUtils;
+import xyz.connorchickenway.towers.utilities.vault.VaultManager;
 
 public interface Placeholder
 {
@@ -77,6 +80,26 @@ public interface Placeholder
             return Long.toString( Math.round( Math.sqrt( distance ) ) );
         }
         
+    };
+
+    public static final OneArgumentPlaceholder PREFIX = new OneArgumentPlaceholder()
+    {
+
+        private final VaultManager vaultManager = AmazingTowers.getInstance().getVaultManager();
+
+        @Override
+        public String perform( Object obj )
+        {
+            final String prefix = vaultManager.getChat().getPlayerPrefix( ( Player ) obj );
+            return vaultManager.hasChat() ? (prefix != null && !prefix.isEmpty() ? StringUtils.color( prefix ) : "")  : "";
+        }
+
+        @Override
+        public String getKey()
+        {
+            return "prefix";
+        }
+
     };
 
     public static final TwoArgumentPlaceholder KILLER_NAME = new TwoArgumentPlaceholder() 

@@ -17,5 +17,6 @@ allprojects {
 		maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
 		maven { url = 'https://oss.sonatype.org/content/repositories/central' }
 		maven { url = 'https://maven.enginehub.org/repo/' }
+		maven { url 'https://jitpack.io' }
     }
 }
