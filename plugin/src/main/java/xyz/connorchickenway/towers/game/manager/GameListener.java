@@ -86,12 +86,17 @@ public class GameListener implements Listener
         GamePlayer gPlayer = plugin.getEntityManager().get( entity.getUniqueId() );
         if ( !gPlayer.isInGame() ) return;
         Game game = gPlayer.getGame();
-        if ( event.getCause() == DamageCause.VOID )
+        if ( !game.hasTeam( entity.getUniqueId() ) )
         {
-            ( ( HumanEntity ) entity ).setHealth( 0.0D );
+            event.setCancelled( true );
             return;
-        }    
-        if ( !game.isState( GameState.GAME ) || !game.hasTeam( entity.getUniqueId() ) )
+        }
+        if ( game.isState( GameState.GAME ) )
+        {
+            if ( event.getCause() == DamageCause.VOID )
+                ( ( HumanEntity ) entity ).setHealth( 0.0D );
+        }
+        else
             event.setCancelled( true );
     }
 
