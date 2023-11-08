@@ -10,6 +10,7 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
+import xyz.connorchickenway.towers.nms.NMSVersion;
 
 import static xyz.connorchickenway.towers.AmazingTowers.SLIME_PLUGIN;
 
@@ -75,11 +76,22 @@ public class SlimeWorldLoader implements GameWorld
     public static SlimePropertyMap getProperties()
     {
         SlimePropertyMap properties = new SlimePropertyMap();
-        properties.setValue( SlimeProperties.DIFFICULTY, "peaceful" );
-        properties.setValue( SlimeProperties.ALLOW_ANIMALS, false );
-        properties.setValue( SlimeProperties.ALLOW_MONSTERS, false );
-        properties.setValue( SlimeProperties.PVP, true );
-        properties.setValue( SlimeProperties.ENVIRONMENT, "normal" );
+        if ( NMSVersion.isNewerVersion )
+        {
+            properties.setValue( SlimeProperties.DIFFICULTY, "peaceful" );
+            properties.setValue( SlimeProperties.ALLOW_ANIMALS, false );
+            properties.setValue( SlimeProperties.ALLOW_MONSTERS, false );
+            properties.setValue( SlimeProperties.PVP, true );
+            properties.setValue( SlimeProperties.ENVIRONMENT, "normal" );
+        }
+        else
+        {
+            properties.setString( SlimeProperties.DIFFICULTY, "peaceful" );
+            properties.setBoolean( SlimeProperties.ALLOW_ANIMALS, false );
+            properties.setBoolean( SlimeProperties.ALLOW_MONSTERS, false );
+            properties.setBoolean( SlimeProperties.PVP, true );
+            properties.setString( SlimeProperties.ENVIRONMENT, "normal" );
+        }
         return properties; 
     }
 
