@@ -3,9 +3,12 @@ package xyz.connorchickenway.towers.config;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Dye;
+import org.bukkit.material.Wool;
 import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.game.builder.Team;
 import xyz.connorchickenway.towers.nms.NMSVersion;
@@ -48,7 +51,7 @@ public class StaticConfiguration
     public static List<String> sign_lines;    
     
     //
-    public static String itemName;
+    public static String itemType;
     public static String redTitle;
     public static int red_position;
     public static String blueTitle;
@@ -71,12 +74,6 @@ public class StaticConfiguration
         drop_armor = config.getBoolean( "drop_leather_armor", false );
         instant_respawn = config.getBoolean( "instant_respawn", true );
         spawn_location = Location.deserialize( config.getString( "options.multiarena.spawn" ) );
-        if ( spawn_location != null )
-        {
-            World world = spawn_location.getWorld();
-            if ( world != null )
-                world.setSpawnLocation( spawn_location.toBukkitLocation() );
-        }
         server_name = config.getString( "options.bungee-mode.server_name", "towers_lobby" );
         /** SIGN **/
         final String signLocation = "options.multiarena.sign"; 
@@ -95,28 +92,24 @@ public class StaticConfiguration
         sign_lines = config.getStringList( signLocation + ".lines" );
 
         //
-        itemName = config.getString( "items.item-name", "WOOL" );
-        if ( !itemName.equalsIgnoreCase( "WOOL" ) && !itemName.equalsIgnoreCase( "DYE" ) )
-            itemName = "WOOL";
+        itemType = config.getString( "items.type", "WOOL" );
+        if ( !itemType.equalsIgnoreCase( "WOOL" ) && !itemType.equalsIgnoreCase( "DYE" ) )
+            itemType = "WOOL";
         redTitle = config.getString( "items.red.name", "&c&lJOIN TEAM RED &7(Right Click)" );
         red_position = config.getInt( "items.red.position", 0 );
         blueTitle = config.getString( "items.blue.name", "&9&lJOIN TEAM BLUE &7(Right Click)" );
         blue_position = config.getInt( "items.blue.position", 1 );
         quitTitle = config.getString( "items.quit.name", "&c&lReturn to lobby &7(Right Click)" );
         quit_position = config.getInt( "items.quit.positon", 8 );        
-        ItemUtils.redItem = ItemBuilder.of( getMaterial( Team.RED, itemName ) )
-                                        .setDisplayName( redTitle )
-                                        .toItemStack();
-        ItemUtils.blueItem = ItemBuilder.of( getMaterial( Team.BLUE, itemName ) )
-                                        .setDisplayName( blueTitle )
-                                        .toItemStack();
-        Material material = StringUtils.searchEnum( Material.class, NMSVersion.isNewerVersion ? "RED_BED" : "BED" );                                        
-        ItemUtils.quitItem = ItemBuilder.of( material )
+        ItemUtils.redItem = createItem( Team.RED, itemType );
+        ItemUtils.blueItem = createItem( Team.BLUE, itemType );
+        Material quitMaterial = StringUtils.searchEnum( Material.class, NMSVersion.isNewerVersion ? "RED_BED" : "BED" );
+        ItemUtils.quitItem = ItemBuilder.of( quitMaterial )
                                         .setDisplayName( quitTitle )
                                         .toItemStack();                                        
     }
 
-    private static Material getMaterial( Team team, String type )
+    private static ItemStack createItem( Team team, String type )
     {
         if ( NMSVersion.isNewerVersion )
         {
@@ -127,12 +120,25 @@ public class StaticConfiguration
                     if ( team == Team.RED ) t = "RED_ROSE";
                     else t = "LAPIS_LAZULI";
             }
-            return StringUtils.searchEnum( Material.class, t );
+            return ItemBuilder.of( StringUtils.searchEnum( Material.class, t ) )
+                    .setDisplayName( team == Team.RED ? redTitle : blueTitle )
+                    .toItemStack();
         }
-        
+        ItemStack itemStack;
         if ( type.equalsIgnoreCase( "dye" ) )
-            type = "INK_SACK";
-        return StringUtils.searchEnum( Material.class, type );        
+        {
+            Dye dye = new Dye( team.getDyeColor() );
+            itemStack = dye.toItemStack( 1 );
+        }
+        else
+        {
+            Wool wool = new Wool( team.getDyeColor() );
+            itemStack = wool.toItemStack( 1 );
+        }
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName( StringUtils.color( team == Team.RED ? redTitle : blueTitle ) );
+        itemStack.setItemMeta( itemMeta );
+        return itemStack;
     }
 
     public static void loadGameMode()

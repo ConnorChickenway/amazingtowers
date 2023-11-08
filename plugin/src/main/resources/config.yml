@@ -46,7 +46,7 @@ options:
 
 items:
   ## AVAILABLE OPTIONS: WOOL, DYE
-  item-name: WOOL
+  type: WOOL
   red:
     name: '&c&lJOIN TEAM RED &7(Right Click)'
     position: 0
