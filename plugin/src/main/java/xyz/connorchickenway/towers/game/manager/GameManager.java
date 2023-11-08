@@ -122,7 +122,7 @@ public class GameManager extends ManagerController
                                     BlockState blockState = world.getBlockAt( x, y, z ).getState();
                                     if ( blockState instanceof Sign )
                                     {
-                                        GameSign gameSign = new GameSign( game, ( Sign ) blockState );
+                                        GameSign gameSign = new GameSign( game, blockState.getLocation() );
                                         game.setGameSign( gameSign );
                                         gameSign.update();
                                         signManager.add( gameSign );

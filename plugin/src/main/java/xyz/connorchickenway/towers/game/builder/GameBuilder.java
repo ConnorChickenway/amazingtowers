@@ -244,7 +244,7 @@ public class GameBuilder
 
     public void save()
     {
-        File gameFolder = new File( AmazingTowers.getInstance().getGameManager().getGameFolder(),  name );
+        File gameFolder = getGameFolder();
         gameFolder.mkdir();
         gameWorld.backup();
         try
@@ -260,6 +260,11 @@ public class GameBuilder
         {
             e.printStackTrace();
         }
+    }
+
+    public File getGameFolder()
+    {
+        return new File( AmazingTowers.getInstance().getGameManager().getGameFolder(),  name );
     }
 
     public static GameBuilder builder()

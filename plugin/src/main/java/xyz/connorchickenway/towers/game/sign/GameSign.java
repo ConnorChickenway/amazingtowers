@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
@@ -17,23 +18,26 @@ import xyz.connorchickenway.towers.game.state.GameState;
 import xyz.connorchickenway.towers.nms.NMSManager;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
+import static xyz.connorchickenway.towers.config.StaticConfiguration.sign_lines;
+
 public class GameSign 
 {
 
     private final Game game;
-    private Sign sign;
-    private Block attachedBlock;
+    private final Location signLocation;
+    private final Block attachedBlock;
 
-    public GameSign( Game game, Sign sign )
+    public GameSign( Game game, Location signLocation )
     {
         this.game = game;
-        this.sign = sign;
-        this.attachedBlock = NMSManager.get().getBlockUtilities().getAttachedBlock( sign.getBlock() );
+        this.signLocation = signLocation;
+        this.attachedBlock = NMSManager.get().getBlockUtilities().getAttachedBlock( signLocation.getBlock() );
         this.game.setGameSign( this );
     }
 
     public void updateLine( int index, String text )
     {
+        Sign sign = ( Sign ) signLocation.getBlock().getState();
         sign.setLine( index , StringUtils.color( text
                 .replace( "%status%", getStatus( game.getState() ) )
                 .replace( "%map%", game.getGameName() )
@@ -45,8 +49,7 @@ public class GameSign
     public void update()
     {
         AtomicInteger aInteger = new AtomicInteger( 0 );
-        StaticConfiguration.sign_lines.forEach( line ->
-            updateLine( aInteger.getAndIncrement(), line ) );
+        sign_lines.forEach( line -> updateLine( aInteger.getAndIncrement(), line ) );
         this.updateAttachedBlock();
     }
 
@@ -74,9 +77,9 @@ public class GameSign
             if ( !file.exists() )
                 file.createNewFile();
             DataOutputStream outputStream = new DataOutputStream( new FileOutputStream( file ) );
-            outputStream.writeInt( sign.getX() );
-            outputStream.writeInt( sign.getY() );
-            outputStream.writeInt( sign.getZ() );
+            outputStream.writeInt( signLocation.getBlockX() );
+            outputStream.writeInt( signLocation.getBlockY() );
+            outputStream.writeInt( signLocation.getBlockZ() );
             outputStream.flush();
             outputStream.close();
         } catch ( Exception e )
@@ -97,9 +100,9 @@ public class GameSign
         return this.attachedBlock;
     }
     
-    public Sign getSign()
+    public Location getSignLocation()
     {
-        return sign;
+        return signLocation;
     }
     
     public Game getGame()

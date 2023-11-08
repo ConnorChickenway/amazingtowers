@@ -2,6 +2,7 @@ package xyz.connorchickenway.towers.game.sign.manager;
 
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -160,10 +161,10 @@ public class SignManager extends ManagerController implements Listener
                 {
                     breakNaturally = false;
                     message = color( "&7You've created a sign for the game &a" + game.getGameName() + "&7!" );
-                    GameSign gameSign = new GameSign( game, ( Sign ) block.getState() );
+                    GameSign gameSign = new GameSign( game, block.getLocation() );
                     game.setGameSign( gameSign );
                     signs.add( gameSign );
-                    gameSign.update();
+                    Bukkit.getScheduler().runTaskLater( plugin, gameSign::update, 5L );
                     gameSign.save();
                 } 
                 else
@@ -186,7 +187,7 @@ public class SignManager extends ManagerController implements Listener
     public GameSign get( org.bukkit.Location location )
     {
         for( GameSign gSign : signs )
-            if ( gSign.getSign().getLocation().equals( location ) )
+            if ( gSign.getSignLocation().equals( location ) )
                 return gSign;
         return null;
     }
