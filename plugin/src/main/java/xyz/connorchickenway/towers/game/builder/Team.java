@@ -1,17 +1,25 @@
 package xyz.connorchickenway.towers.game.builder;
 
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 
 public enum Team 
 {
     
-    RED( ChatColor.RED ), BLUE( ChatColor.BLUE );
+    RED( ChatColor.RED, DyeColor.RED ), BLUE( ChatColor.BLUE, DyeColor.BLUE );
     
-    private ChatColor chatColor;
+    private final ChatColor chatColor;
+    private final DyeColor dyeColor;
 
-    Team( ChatColor chatColor )
+    Team( ChatColor chatColor, DyeColor dyeColor )
     {
         this.chatColor = chatColor;
+        this.dyeColor = dyeColor;
+    }
+
+    public DyeColor getDyeColor()
+    {
+        return dyeColor;
     }
 
     @Override
