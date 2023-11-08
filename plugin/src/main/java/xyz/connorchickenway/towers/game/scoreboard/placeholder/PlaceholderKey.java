@@ -19,7 +19,8 @@ public enum PlaceholderKey
     SECONDS( gPlayer -> gPlayer.getGame().getRealSeconds() ),
     POINTS_BLUE( gPlayer -> gPlayer.getGame().getBlue().getPoints() ),
     POINTS_RED( gPlayer -> gPlayer.getGame().getRed().getPoints() ),
-    MAX_POINTS( gPlayer -> gPlayer.getGame().getMaxPoints() );
+    MAX_POINTS( gPlayer -> gPlayer.getGame().getMaxPoints() ),
+    PLAYER_KILLS( GamePlayer::getKills );
 
     private Function<GamePlayer, Object> function;
 

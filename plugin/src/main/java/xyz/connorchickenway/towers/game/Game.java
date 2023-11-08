@@ -26,6 +26,7 @@ import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
 import xyz.connorchickenway.towers.game.entity.inventory.InventorySession;
+import xyz.connorchickenway.towers.game.entity.manager.EntityManager;
 import xyz.connorchickenway.towers.game.kit.Kit;
 import xyz.connorchickenway.towers.game.lang.Lang;
 import xyz.connorchickenway.towers.game.lang.placeholder.Placeholder;
@@ -410,6 +411,9 @@ public class Game
                     pair( PLAYER_NAME, player, getChatColor( player ) ),
                     pair( KILLER_NAME,  killer, getChatColor( killer ) )
                 ) );
+            GamePlayer gKiller = EntityManager.getPlayer( killer.getUniqueId() );
+            if ( gKiller != null )
+                gKiller.addKill();
         }
         else
         {

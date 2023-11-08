@@ -15,12 +15,14 @@ public class GamePlayer
     private final Player player;
     private InventorySession inventorySession;
     private Game game;
+    private int kills;
 
     private GamePlayer( Player player )
     {
         this.player = player;
         if ( GameMode.isMultiArena() )
-            this.inventorySession = new InventorySession( this );  
+            this.inventorySession = new InventorySession( this );
+        this.kills = 0;
     }
     
     public Location getLocation()
@@ -67,7 +69,17 @@ public class GamePlayer
     {
         return game == this.game;
     }
-    
+
+    public int getKills()
+    {
+        return kills;
+    }
+
+    public void addKill()
+    {
+        this.kills += 1;
+    }
+
     public InventorySession getInventorySession()
     {
         return inventorySession;
