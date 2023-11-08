@@ -24,3 +24,4 @@ bin/
 
 #Ignore intellij files
 .idea
+plugin/out/**
