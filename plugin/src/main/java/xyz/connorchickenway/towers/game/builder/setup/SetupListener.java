@@ -16,6 +16,7 @@ import xyz.connorchickenway.towers.game.builder.GameBuilder;
 import xyz.connorchickenway.towers.game.builder.setup.wand.Wand;
 import xyz.connorchickenway.towers.game.world.GameWorld;
 import xyz.connorchickenway.towers.game.world.SlimeWorldLoader;
+import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.ItemUtils;
 import xyz.connorchickenway.towers.utilities.MetadataUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
@@ -90,7 +91,7 @@ public class SetupListener implements Listener
 
     private Location fix( Location location )
     {
-        return location.clone().add( ( ( location.getX() < 0.0 ) ? 1 : 0 ), 0.0, ( ( location.getZ() < 0.0 ) ? 1 : 0 ) );
+        return NMSVersion.isNewerVersion ? location : location.add( ( ( location.getX() < 0.0 ) ? 1 : 0 ), 0.0, ( ( location.getZ() < 0.0 ) ? 1 : 0 ) );
     }
 
     private boolean hasSession( Player player )
