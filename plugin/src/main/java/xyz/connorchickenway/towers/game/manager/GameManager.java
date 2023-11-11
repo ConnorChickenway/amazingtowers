@@ -97,7 +97,7 @@ public class GameManager extends ManagerController
                     }
                     else 
                     {
-                        Logger.info( "Cannot load " + gBuilder.getName() + " | variable is null" );
+                        Logger.info( "Cannot load " + gBuilder.getName() + " | game world is null" );
                         continue;
                     }
                     Game game = gBuilder.build();
