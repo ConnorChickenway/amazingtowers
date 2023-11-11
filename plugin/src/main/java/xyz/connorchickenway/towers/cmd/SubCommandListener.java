@@ -167,7 +167,7 @@ public class SubCommandListener
                 return CommandReason.SOMETHING_ELSE;
             }
             gBuilder.setMinPlayers( x );
-            sender.sendMessage( "You have set " + x + " to min players.!" );
+            sender.sendMessage( ChatColor.GRAY + "You have set " + ChatColor.GREEN + x + ChatColor.GRAY +" to min players.!" );
             return CommandReason.OK;
         } catch ( NumberFormatException e )
         {
@@ -201,7 +201,7 @@ public class SubCommandListener
                 return CommandReason.SOMETHING_ELSE;
             }
             gBuilder.setMaxPlayers( x );
-            sender.sendMessage( "You have set " + x + " to max players.!" );
+            sender.sendMessage( ChatColor.GRAY + "You have set " + ChatColor.GREEN + x + ChatColor.GRAY +" to max players.!" );
             return CommandReason.OK;
         } catch ( NumberFormatException e ) 
         {
@@ -237,7 +237,7 @@ public class SubCommandListener
     @SubCommand(
         subcmd = "setmaxpoints",
         max_args = 2,
-        usage = {"seconds"},
+        usage = {"points"},
         error = "\u00a7cYou must select a number.",
         builder_cmd = true,
         setup_cmd = true
@@ -249,7 +249,7 @@ public class SubCommandListener
         try {
             int x = Integer.parseInt( args0 );
             gBuilder.setMaxPoints( x );
-            sender.sendMessage( ChatColor.GRAY + "You have set " + ChatColor.GREEN + x + ChatColor.GRAY + " to count.!" );
+            sender.sendMessage( ChatColor.GRAY + "You have set " + ChatColor.GREEN + x + ChatColor.GRAY + " to max points.!" );
             return CommandReason.OK;
         } catch ( NumberFormatException e ) 
         {
@@ -319,7 +319,7 @@ public class SubCommandListener
                     gameWorld = new SlimeWorldLoader( slimeWorld );
                 } catch ( Exception e )
                 {
-                    Bukkit.broadcastMessage( e.getMessage() );
+                    e.printStackTrace();
                     return CommandReason.SOMETHING_ELSE;
                 }
             }
@@ -358,11 +358,15 @@ public class SubCommandListener
                                     StaticConfiguration.spawn_location.getWorld() : Bukkit.getWorld( StringUtils.DEFAULT_WORLD_NAME ),
             world = gameWorld.getWorld();
         for( Player player : world.getPlayers() )
-            player.teleport( defaultWorld.getSpawnLocation() );
+        {
+            xyz.connorchickenway.towers.utilities.location.Location loc = StaticConfiguration.spawn_location;
+            player.teleport( loc != null ? loc.toBukkitLocation() : defaultWorld.getSpawnLocation() );
+        }
         if ( gameWorld instanceof SlimeWorldLoader )
         {
-            gameWorld.unload( true );
-            gameWorld.load();
+            boolean unload = gameWorld.unload( true );
+            if ( unload )
+                gameWorld.load();
         }
         gBuilder.save();
         GameManager.get().addGame( gBuilder.build() );
