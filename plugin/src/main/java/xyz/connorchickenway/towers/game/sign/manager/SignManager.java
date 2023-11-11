@@ -5,7 +5,6 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -31,7 +30,7 @@ import static xyz.connorchickenway.towers.utilities.StringUtils.color;
 public class SignManager extends ManagerController implements Listener
 {
 
-    private Set<GameSign> signs = Sets.newHashSet();
+    private final Set<GameSign> signs = Sets.newHashSet();
     private AttachedManager attachedManager;
 
     public SignManager( AmazingTowers plugin )
@@ -85,7 +84,7 @@ public class SignManager extends ManagerController implements Listener
                 event.setCancelled( true );
                 return;
             } 
-            String message = color( "&cYou've been broke an arena sign that belongs to ");
+            String message = color( "&cYou have broken an arena sign that belongs to ");
             if ( this.isWallSign( block ) )
             {
                 GameSign gameSign = get( block.getLocation() );
