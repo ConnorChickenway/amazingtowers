@@ -64,7 +64,16 @@ public class GameListener implements Listener
     public void onRespawn( PlayerRespawnEvent event )
     {
         GamePlayer gPlayer = plugin.getEntityManager().get( event.getPlayer().getUniqueId() );
-        if ( !gPlayer.isInGame() ) return;
+        if ( !gPlayer.isInGame() )
+        {
+            if ( GameMode.isMultiArena() )
+            {
+                Location location = StaticConfiguration.spawn_location;
+                if ( location != null )
+                    location.teleport( gPlayer.toBukkitPlayer() );
+            }
+            return;
+        }
         gPlayer.getGame().respawn( event );
     }
 
