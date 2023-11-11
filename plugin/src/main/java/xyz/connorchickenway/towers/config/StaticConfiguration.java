@@ -59,6 +59,13 @@ public class StaticConfiguration
     public static String quitTitle;
     public static int quit_position;
 
+    // REWARDS
+    public static boolean is_reward_enabled;
+    public static int max_vip_multiplication;
+    public static int kill_value, win_value, point_value, by_playing_value;
+    public static boolean is_message_enabled;
+    public static String reward_lang;
+
     public static void load()
     {
         FileConfiguration config = plugin.getConfig();
@@ -106,7 +113,16 @@ public class StaticConfiguration
         Material quitMaterial = StringUtils.searchEnum( Material.class, NMSVersion.isNewerVersion ? "RED_BED" : "BED" );
         ItemUtils.quitItem = ItemBuilder.of( quitMaterial )
                                         .setDisplayName( quitTitle )
-                                        .toItemStack();                                        
+                                        .toItemStack();
+        //REWARDS
+        is_reward_enabled = config.getBoolean( "rewards.enabled", true );
+        max_vip_multiplication = config.getInt( "rewards.max_vip_multiplication", 4 );
+        kill_value = config.getInt( "rewards.value.kill", 2 );
+        win_value = config.getInt( "rewards.value.win", 20 );
+        point_value = config.getInt( "rewards.value.point", 3 );
+        by_playing_value = config.getInt( "rewards.value.by_playing", 10 );
+        is_message_enabled = config.getBoolean( "rewards.message.enabled", true );
+        reward_lang = StringUtils.color( config.getString( "rewards.message.lang", "&a+%coins% &7coins" ) );
     }
 
     private static ItemStack createItem( Team team, String type )

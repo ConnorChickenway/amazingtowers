@@ -9,7 +9,7 @@ chat:
     normal_chat: '%prefix% &f%player_name% &8: &f%msg%'
     team_chat: '%color_team%&l[%team_name%] %prefix% &f%player_name% &8: &f%msg%'
     global_chat: '%color_team%&l[GLOBAL] %prefix% &f%player_name% &7: &f%msg%'
-#this option is for prevent drop armor
+#if you want to drop a leather armor normally, then the option below must be false
 drop_leather_armor: true
 instant_respawn: true
 #options:
@@ -43,10 +43,24 @@ options:
 
   bungee-mode:
     server_name: 'towers_lobby'
-
+rewards:
+  #if you do not have VAULT and ECONOMY PLUGIN in your server then this option does not do anything
+  enabled: true
+  #permission: towers.vip.coinx2, towers.vip.coinx3, towers.vip.coinx4
+  #if you want more permissions, then you have to increase the number below
+  max_vip_multiplication: 4
+  value:
+    kill: 2
+    win: 20
+    point: 3
+    #if they finish a game, they will receive this reward
+    by_playing: 10
+  message:
+    enabled: true
+    lang: "&a+%coins% &7coins"
 items:
   ## AVAILABLE OPTIONS: WOOL, DYE
-  type: WOOL
+  type: DYE
   red:
     name: '&c&lJOIN TEAM RED &7(Right Click)'
     position: 0

@@ -43,6 +43,8 @@ import xyz.connorchickenway.towers.nms.NMSManager;
 import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.*;
 import xyz.connorchickenway.towers.utilities.location.Location;
+import xyz.connorchickenway.towers.utilities.vault.Reward;
+import xyz.connorchickenway.towers.utilities.vault.RewardsUtils;
 
 import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.*;
 
@@ -308,6 +310,7 @@ public class Game
                 {   
                     Team team = this.getTeam( gPlayer.getUniqueId() );
                     team.addPoint( gPlayer.toBukkitPlayer() );
+                    RewardsUtils.deposit( gPlayer, Reward.POINT );
                 }
             }
         }
@@ -360,6 +363,9 @@ public class Game
     {
         players.forEach( gamePlayer ->
         {
+            RewardsUtils.deposit( gamePlayer, Reward.BY_PLAYING );
+            if ( winnerTeam.isInTeam( gamePlayer.getUniqueId() ) )
+                RewardsUtils.deposit( gamePlayer, Reward.WIN );
             leave( gamePlayer, false );
             Player player = gamePlayer.toBukkitPlayer();
             if ( GameMode.isMultiArena() )
@@ -413,7 +419,10 @@ public class Game
                 ) );
             GamePlayer gKiller = EntityManager.getPlayer( killer.getUniqueId() );
             if ( gKiller != null )
+            {
                 gKiller.addKill();
+                RewardsUtils.deposit( gKiller, Reward.KILL );
+            }
         }
         else
         {
@@ -721,6 +730,5 @@ public class Game
     {
         return new Game( name );
     }
-
 
 }
