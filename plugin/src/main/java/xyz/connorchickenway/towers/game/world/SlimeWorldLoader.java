@@ -76,7 +76,7 @@ public class SlimeWorldLoader implements GameWorld
     public static SlimePropertyMap getProperties()
     {
         SlimePropertyMap properties = new SlimePropertyMap();
-        if ( NMSVersion.isNewerVersion )
+        if ( NMSVersion.nmsVersion.isAboveOrEqual( NMSVersion.V1_16_R1 ) )
         {
             properties.setValue( SlimeProperties.DIFFICULTY, "peaceful" );
             properties.setValue( SlimeProperties.ALLOW_ANIMALS, false );
