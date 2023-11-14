@@ -3,7 +3,6 @@ package xyz.connorchickenway.towers.game;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,7 +58,7 @@ public class Game
     private GameWorld gameWorld;
     private Kit kit;
     private GameState state;
-    private Team red, blue;
+    private final Team red, blue;
     private Location lobby, ironGenerator, expGenerator;
     private int minPlayers, maxPlayers, count, maxPoints;
     private GameSign gameSign;
@@ -456,28 +455,20 @@ public class Game
         event.setCancelled( true );
         Player player = event.getPlayer();
         String eventMsg = event.getMessage();
-        AtomicReference<String> message = new AtomicReference<String>( "" ); 
-        if ( state == GameState.LOBBY || state == GameState.STARTING || !hasTeam( player.getUniqueId() ) )
+        StringBuilder stringBuilder = new StringBuilder();
+        Team team = getTeam( player.getUniqueId() );
+        if ( state == GameState.LOBBY || state == GameState.STARTING || team == null )
         {
-            message.set( StringUtils.replacePlaceholders( StaticConfiguration.normal_format, 
+            stringBuilder.append( StringUtils.replacePlaceholders( StaticConfiguration.normal_format,
                 builder(
                     pair( PREFIX, player ),
                     pair( PLAYER_NAME, player ),
                     pair( MESSAGE, eventMsg )
                 ) ) );
-            players.forEach( gPlayer -> gPlayer.sendMessage( message.get() ) );    
+            players.forEach( gPlayer -> gPlayer.sendMessage( stringBuilder.toString() ) );
             return;    
         }   
-        Team team = getTeam( player.getUniqueId() );
-        message.set( StringUtils.replacePlaceholders( StaticConfiguration.team_format, 
-            builder( pair( PREFIX, player ),
-                pair( PLAYER_NAME, player ),
-                pair( MESSAGE, eventMsg ),
-                pair( COLOR_TEAM, getChatColor( player ) ),
-                pair( TEAM_NAME, team.getConfigName() )
-            )
-        ) );
-        team.getOnlinePlayers().forEach( pl -> pl.sendMessage( message.get() ) );
+        team.message( player, stringBuilder.toString() );
     }
 
     private String getWinnerMessage( Team winnerTeam )

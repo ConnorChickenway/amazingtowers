@@ -97,11 +97,14 @@ public class Team
 
     public void message( Player player, String message )
     {
-        String format = StringUtils.replacePlaceholders( StaticConfiguration.team_format, 
-            builder( 
-                pair( COLOR_TEAM , chatColor ), 
-                pair( TEAM_NAME , configName ), 
-                pair( MESSAGE , message ) ) );
+        String format = StringUtils.replacePlaceholders( StaticConfiguration.team_format,
+            builder(
+                    pair( PREFIX, player ),
+                    pair( PLAYER_NAME, player ),
+                    pair( COLOR_TEAM , chatColor ),
+                    pair( TEAM_NAME , configName ),
+                    pair( MESSAGE , message ) )
+            );
         this.getOnlinePlayers().forEach( online -> online.sendMessage( format ) );
     }
 
