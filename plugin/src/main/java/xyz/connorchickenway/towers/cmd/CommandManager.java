@@ -37,7 +37,7 @@ public class CommandManager extends ManagerController implements CommandExecutor
             sender.sendMessage( StringUtils.color( "AmazingTowers v" + plugin.getDescription().getVersion() + " | Author: ConnorChickenway" ) );
             return false;
         }
-        if ( args.length <= 0 )
+        if ( args.length <= 0 || args[0].equalsIgnoreCase( "help" ) )
         {
             help( sender, label, false );
             return false;
