@@ -6,9 +6,9 @@ chat:
   enabled: true
   global_prefix: '!'
   format:
-    normal_chat: '%prefix% &f%player_name% &8: &f%msg%'
-    team_chat: '%color_team%&l[%team_name%] %prefix% &f%player_name% &8: &f%msg%'
-    global_chat: '%color_team%&l[GLOBAL] %prefix% &f%player_name% &7: &f%msg%'
+    normal_chat: '%prefix%&f%player_name% &8: &f%msg%'
+    team_chat: '%color_team%&l[%team_name%] %prefix%&f%player_name% &8: &f%msg%'
+    global_chat: '%color_team%&l[GLOBAL] %prefix%&f%player_name% &7: &f%msg%'
 #if you want to drop a leather armor normally, then the option below must be false
 drop_leather_armor: true
 instant_respawn: true

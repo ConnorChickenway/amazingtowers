@@ -90,8 +90,8 @@ public interface Placeholder
         @Override
         public String perform( Object obj )
         {
-            final String prefix = vaultManager.getChat().getPlayerPrefix( ( Player ) obj );
-            return vaultManager.hasChat() ? (prefix != null && !prefix.isEmpty() ? StringUtils.color( prefix ) : "")  : "";
+            final String prefix = StringUtils.color( vaultManager.getChat().getPlayerPrefix( ( Player ) obj ) );
+            return vaultManager.hasChat() ? ( StringUtils.isBlank( prefix ) ? "" : prefix ) : "";
         }
 
         @Override
