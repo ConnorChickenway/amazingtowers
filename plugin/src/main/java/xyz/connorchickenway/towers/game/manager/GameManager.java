@@ -20,6 +20,7 @@ import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.Game;
 import xyz.connorchickenway.towers.game.builder.GameBuilder;
 import xyz.connorchickenway.towers.game.manager.listener.GameListener;
+import xyz.connorchickenway.towers.game.manager.listener.ProtectionListener;
 import xyz.connorchickenway.towers.game.sign.GameSign;
 import xyz.connorchickenway.towers.game.sign.manager.SignManager;
 import xyz.connorchickenway.towers.game.world.BukkitWorldLoader;
@@ -51,6 +52,7 @@ public class GameManager extends ManagerController
         this.loadSignManager();
         this.loadGames();
         plugin.getServer().getPluginManager().registerEvents( new GameListener(), plugin );
+        plugin.getServer().getPluginManager().registerEvents( new ProtectionListener(), plugin );
     }
 
     public void loadSignManager()
