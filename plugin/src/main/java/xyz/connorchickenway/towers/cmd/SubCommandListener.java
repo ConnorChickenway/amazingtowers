@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -421,6 +422,55 @@ public class SubCommandListener
         AmazingTowers.getInstance().saveConfig();
         sender.sendMessage( ChatColor.GREEN + "Spawn set successfully.!" );
         return CommandReason.OK;
+    }
+
+    @SubCommand(
+        subcmd = "setborder",
+        max_args = 1,
+        usage = "",
+        builder_cmd = true,
+        setup_cmd = true,
+        wand_usage = true
+    )
+    public CommandReason setBorderCommand( Player sender, String[] args )
+    {
+        SetupSession session = GameBuilder.getSession( sender );
+        Wand wand = session.getWand();
+        if ( wand.hasLocations() )
+        {
+            session.getBuilder().setBorder( new Cuboid( wand.getPosition1(), wand.getPosition2() ) );
+            sender.sendMessage( ChatColor.GRAY + "You have set a border" );
+            return CommandReason.OK;
+        }
+        sender.sendMessage( ChatColor.RED + "You must set a region.!" );
+        return CommandReason.SOMETHING_ELSE;
+    }
+
+    @SubCommand(
+        subcmd = "locations",
+        max_args = 1,
+        usage = "",
+        builder_cmd = true,
+        setup_cmd = true
+    )
+    public CommandReason locationsCommand( Player sender, String[] args )
+    {
+        GameBuilder gBuilder = GameBuilder.getSession( sender ).getBuilder();
+        sender.sendMessage( ChatColor.GRAY + "Locations:" );
+        checkLocation( sender, "lobby", gBuilder.getLobby() );
+        checkLocation( sender, "experience-generator", gBuilder.getExpGenerator() );
+        checkLocation( sender, "iron-generator", gBuilder.getIronGenerator() );
+        checkLocation( sender, "red-spawn", gBuilder.getRedSpawn() );
+        checkLocation( sender, "blue-spawn", gBuilder.getBlueSpawn() );
+        checkLocation( sender, "border", gBuilder.getBorder() );
+        sender.sendMessage( ChatColor.GREEN + "✔" + ChatColor.GRAY + "You set that location" );
+        sender.sendMessage( ChatColor.RED + "✖" + ChatColor.GRAY + "You do not set that location" );
+        return CommandReason.OK;
+    }
+
+    private void checkLocation( Player player, String nameLocation, Object location )
+    {
+        player.sendMessage( StringUtils.color( " &7- " + nameLocation + " " + ( location != null ? "&a✔" : "&c✖" ) ) );
     }
 
 }

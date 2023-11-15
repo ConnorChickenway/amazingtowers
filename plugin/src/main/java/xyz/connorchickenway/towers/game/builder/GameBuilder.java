@@ -47,6 +47,7 @@ public class GameBuilder
     private Cuboid redPool;
     @SerializedName( "blue-pool" )
     private Cuboid bluePool;
+    private Cuboid border;
     private Kit kit;
 
     private transient GameWorld gameWorld;
@@ -196,6 +197,16 @@ public class GameBuilder
             setBluePool( cuboid );    
     }
 
+    public void setBorder( Cuboid cuboid )
+    {
+        this.border = cuboid;
+    }
+
+    public Cuboid getBorder()
+    {
+        return border;
+    }
+
     public GameBuilder setGameWorld( GameWorld gameWorld )
     {
         this.gameWorld = gameWorld;
@@ -220,7 +231,7 @@ public class GameBuilder
             redSpawn != null && minPlayers > 0 &&
             maxPlayers > 0 && count > 0 &&
             maxPoints > 0 && redPool != null && 
-            bluePool != null;
+            bluePool != null && border != null;
     }
 
     public Game build()
@@ -238,6 +249,7 @@ public class GameBuilder
         game.getRed().setSpawnLocation( redSpawn );
         game.getBlue().setPool( bluePool );
         game.getBlue().setSpawnLocation( blueSpawn );
+        game.setBorder( border );
         game.setGameWorld( gameWorld );
         return game;
     }

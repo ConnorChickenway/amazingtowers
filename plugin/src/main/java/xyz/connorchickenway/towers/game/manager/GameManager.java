@@ -19,6 +19,7 @@ import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.Game;
 import xyz.connorchickenway.towers.game.builder.GameBuilder;
+import xyz.connorchickenway.towers.game.manager.listener.GameListener;
 import xyz.connorchickenway.towers.game.sign.GameSign;
 import xyz.connorchickenway.towers.game.sign.manager.SignManager;
 import xyz.connorchickenway.towers.game.world.BukkitWorldLoader;

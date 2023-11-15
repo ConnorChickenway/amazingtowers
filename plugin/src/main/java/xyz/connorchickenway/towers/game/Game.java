@@ -4,10 +4,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -41,6 +38,7 @@ import xyz.connorchickenway.towers.game.world.GameWorld;
 import xyz.connorchickenway.towers.nms.NMSManager;
 import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.*;
+import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.location.Location;
 import xyz.connorchickenway.towers.utilities.vault.Reward;
 import xyz.connorchickenway.towers.utilities.vault.RewardsUtils;
@@ -63,6 +61,7 @@ public class Game
     private int minPlayers, maxPlayers, count, maxPoints;
     private GameSign gameSign;
     private final GameScoreboard gameScoreboard;
+    private Cuboid border;
 
     private Game( String gameName )
     {
@@ -715,6 +714,21 @@ public class Game
     public File getFolder()
     {
         return folder;
+    }
+
+    public World getWorld()
+    {
+        return gameWorld.getWorld();
+    }
+
+    public Cuboid getBorder()
+    {
+        return border;
+    }
+
+    public void setBorder( Cuboid border )
+    {
+        this.border = border;
     }
 
     public static Game newInstance( String name )

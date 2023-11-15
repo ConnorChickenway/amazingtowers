@@ -1,5 +1,7 @@
 package xyz.connorchickenway.towers.utilities;
 
+//You can get more information in here: https://www.spigotmc.org/threads/region-cuboid.329859/
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -8,17 +10,19 @@ public class Cuboid
 {
 
     private final int xMin, xMax, yMin, yMax, zMin, zMax;
+    private final double xMinCentered, xMaxCentered, yMinCentered, yMaxCentered, zMinCentered, zMaxCentered;
     private final String worldName;
 
     public Cuboid( Location point1, Location point2 )
     {
-        this.xMin = Math.min( point1.getBlockX(), point2.getBlockX() );
-        this.xMax = Math.max( point1.getBlockX(), point2.getBlockX() );
-        this.yMin = Math.min( point1.getBlockY(), point2.getBlockY() );
-        this.yMax = Math.max( point1.getBlockY(), point2.getBlockY() );
-        this.zMin = Math.min( point1.getBlockZ(), point2.getBlockZ() );
-        this.zMax = Math.max( point1.getBlockZ(), point2.getBlockZ() );
-        this.worldName = point1.getWorld().getName();
+        this( point1.getWorld().getName(),
+                Math.min( point1.getBlockX(), point2.getBlockX() ),
+                Math.max( point1.getBlockX(), point2.getBlockX() ),
+                Math.min( point1.getBlockY(), point2.getBlockY() ),
+                Math.max( point1.getBlockY(), point2.getBlockY() ),
+                Math.min( point1.getBlockZ(), point2.getBlockZ() ),
+                Math.max( point1.getBlockZ(), point2.getBlockZ() )
+        );
     }
 
     public Cuboid( String worldName, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax )
@@ -30,6 +34,12 @@ public class Cuboid
         this.yMax = yMax;
         this.zMin = zMin;
         this.zMax = zMax;
+        this.xMinCentered = this.xMin + 0.5;
+        this.xMaxCentered = this.xMax + 0.5;
+        this.yMinCentered = this.yMin + 0.5;
+        this.yMaxCentered = this.yMax + 0.5;
+        this.zMinCentered = this.zMin + 0.5;
+        this.zMaxCentered = this.zMax + 0.5;
     }
 
     public int getXMin()
@@ -79,8 +89,14 @@ public class Cuboid
 
     public boolean isIn( Location loc )
     {
-        return loc.getBlockX() >= this.xMin && loc.getBlockX() <= this.xMax && loc.getBlockY() >= this.yMin && loc.getBlockY() <= this.yMax && loc
-                .getBlockZ() >= this.zMin && loc.getBlockZ() <= this.zMax;
+        return loc.getBlockX() >= this.xMin && loc.getBlockX() <= this.xMax && loc.getBlockY() >= this.yMin &&
+                loc.getBlockY() <= this.yMax && loc.getBlockZ() >= this.zMin && loc.getBlockZ() <= this.zMax;
+    }
+
+    public boolean isInWithMarge( Location loc, double marge )
+    {
+        return loc.getX() >= this.xMinCentered - marge && loc.getX() <= this.xMaxCentered + marge && loc.getY() >= this.yMinCentered - marge && loc
+                .getY() <= this.yMaxCentered + marge && loc.getZ() >= this.zMinCentered - marge && loc.getZ() <= this.zMaxCentered + marge;
     }
 
     public String serialize()

@@ -1,4 +1,4 @@
-package xyz.connorchickenway.towers.game.manager;
+package xyz.connorchickenway.towers.game.manager.listener;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -28,6 +28,7 @@ import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.Game;
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
 import xyz.connorchickenway.towers.game.lang.Lang;
+import xyz.connorchickenway.towers.game.manager.GameManager;
 import xyz.connorchickenway.towers.game.state.GameState;
 import xyz.connorchickenway.towers.game.team.Team;
 import xyz.connorchickenway.towers.nms.NMSVersion;
