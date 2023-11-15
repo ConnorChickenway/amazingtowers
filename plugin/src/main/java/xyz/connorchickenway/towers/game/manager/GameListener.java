@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -84,6 +85,15 @@ public class GameListener implements Listener
         GamePlayer gPlayer = plugin.getEntityManager().get( event.getPlayer().getUniqueId() );
         if ( !gPlayer.isInGame() ) return;
         gPlayer.getGame().chat( event );
+    }
+
+    @EventHandler
+    public void onFood( FoodLevelChangeEvent event )
+    {
+        GamePlayer gamePlayer = plugin.getEntityManager().get( event.getEntity().getUniqueId() );
+        if ( !gamePlayer.isInGame() ) return;
+        if ( !gamePlayer.getGame().hasTeam( gamePlayer.getUniqueId() ) )
+            event.setCancelled( true );
     }
 
     @EventHandler( priority = EventPriority.MONITOR )
