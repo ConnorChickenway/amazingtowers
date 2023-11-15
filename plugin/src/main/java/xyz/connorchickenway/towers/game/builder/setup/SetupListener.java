@@ -16,7 +16,6 @@ import xyz.connorchickenway.towers.game.builder.GameBuilder;
 import xyz.connorchickenway.towers.game.builder.setup.wand.Wand;
 import xyz.connorchickenway.towers.game.world.GameWorld;
 import xyz.connorchickenway.towers.game.world.SlimeWorldLoader;
-import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.ItemUtils;
 import xyz.connorchickenway.towers.utilities.MetadataUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
@@ -32,7 +31,7 @@ public class SetupListener implements Listener
         {    
             Action action = event.getAction();
             Wand wand = GameBuilder.getSession( player ).getWand();
-            Location blockLocation = fix( event.getClickedBlock().getLocation() );
+            Location blockLocation =  event.getClickedBlock().getLocation();
             event.setCancelled( true );
             boolean set = false;
             if ( action == Action.LEFT_CLICK_BLOCK )
@@ -87,11 +86,6 @@ public class SetupListener implements Listener
             player.getInventory().clear();
             MetadataUtils.remove( player, "setup-session" );
         }
-    }
-
-    private Location fix( Location location )
-    {
-        return NMSVersion.isNewerVersion ? location : location.add( ( ( location.getX() < 0.0 ) ? 1 : 0 ), 0.0, ( ( location.getZ() < 0.0 ) ? 1 : 0 ) );
     }
 
     private boolean hasSession( Player player )
