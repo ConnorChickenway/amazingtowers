@@ -1,6 +1,7 @@
 package xyz.connorchickenway.towers.game.builder.setup.wand;
 
 import org.bukkit.Location;
+import xyz.connorchickenway.towers.utilities.Cuboid;
 
 public class Wand 
 {
@@ -40,6 +41,13 @@ public class Wand
     public boolean hasLocations()
     {
         return region[ 0 ] != null && region[ 1 ] != null;
+    }
+
+    public Cuboid createCuboid()
+    {
+        if ( hasLocations() )
+            return new Cuboid( getPosition1(), getPosition2() );
+        return null;
     }
 
 }
