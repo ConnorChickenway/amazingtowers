@@ -48,6 +48,10 @@ public class GameBuilder
     @SerializedName( "blue-pool" )
     private Cuboid bluePool;
     private Cuboid border;
+    @SerializedName( "red-spawn-cuboid" )
+    private Cuboid redSpawnCuboid;
+    @SerializedName( "blue-spawn-cuboid" )
+    private Cuboid blueSpawnCuboid;
     private Kit kit;
 
     private transient GameWorld gameWorld;
@@ -213,7 +217,27 @@ public class GameBuilder
         this.worldLoader = (gameWorld instanceof BukkitWorldLoader ? WorldLoader.BUKKIT : WorldLoader.SLIME); 
         return this;
     }
-    
+
+    public Cuboid getBlueSpawnCuboid()
+    {
+        return blueSpawnCuboid;
+    }
+
+    public void setBlueSpawnCuboid( Cuboid blueSpawnCuboid )
+    {
+        this.blueSpawnCuboid = blueSpawnCuboid;
+    }
+
+    public Cuboid getRedSpawnCuboid()
+    {
+        return redSpawnCuboid;
+    }
+
+    public void setRedSpawnCuboid( Cuboid redSpawnCuboid )
+    {
+        this.redSpawnCuboid = redSpawnCuboid;
+    }
+
     public GameWorld getGameWorld()
     {
         return gameWorld;
@@ -231,7 +255,8 @@ public class GameBuilder
             redSpawn != null && minPlayers > 0 &&
             maxPlayers > 0 && count > 0 &&
             maxPoints > 0 && redPool != null && 
-            bluePool != null && border != null;
+            bluePool != null && border != null &&
+                blueSpawnCuboid != null && redSpawnCuboid != null;
     }
 
     public Game build()
@@ -250,6 +275,8 @@ public class GameBuilder
         game.getBlue().setPool( bluePool );
         game.getBlue().setSpawnLocation( blueSpawn );
         game.setBorder( border );
+        game.setRedSpawnCuboid( redSpawnCuboid );
+        game.setBlueSpawnCuboid( blueSpawnCuboid );
         game.setGameWorld( gameWorld );
         return game;
     }

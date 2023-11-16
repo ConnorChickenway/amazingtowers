@@ -61,7 +61,7 @@ public class Game
     private int minPlayers, maxPlayers, count, maxPoints;
     private GameSign gameSign;
     private final GameScoreboard gameScoreboard;
-    private Cuboid border;
+    private Cuboid border, redSpawnCuboid, blueSpawnCuboid;
 
     private Game( String gameName )
     {
@@ -729,6 +729,26 @@ public class Game
     public void setBorder( Cuboid border )
     {
         this.border = border;
+    }
+
+    public void setBlueSpawnCuboid( Cuboid blueSpawnCuboid )
+    {
+        this.blueSpawnCuboid = blueSpawnCuboid;
+    }
+
+    public Cuboid getBlueSpawnCuboid()
+    {
+        return blueSpawnCuboid;
+    }
+
+    public void setRedSpawnCuboid( Cuboid redspawnCuboid )
+    {
+        this.redSpawnCuboid = redspawnCuboid;
+    }
+
+    public Cuboid getRedSpawnCuboid()
+    {
+        return redSpawnCuboid;
     }
 
     public static Game newInstance( String name )

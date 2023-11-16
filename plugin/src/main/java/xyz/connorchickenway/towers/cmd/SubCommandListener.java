@@ -85,9 +85,10 @@ public class SubCommandListener
         {
             SetupSession session = GameBuilder.getSession( sender );
             Wand wand = session.getWand();
-            if ( wand.hasLocations() )
+            Cuboid cuboid = wand.createCuboid();
+            if ( cuboid != null )
             {
-                session.getBuilder().setPool( new Cuboid( wand.getPosition1(), wand.getPosition2() ), team );
+                session.getBuilder().setPool( cuboid, team );
                 sender.sendMessage( ChatColor.GRAY + "You have set a pool to " + team + ChatColor.GRAY + " team.!" );
                 return CommandReason.OK;
             }
@@ -436,14 +437,46 @@ public class SubCommandListener
     {
         SetupSession session = GameBuilder.getSession( sender );
         Wand wand = session.getWand();
-        if ( wand.hasLocations() )
+        Cuboid cuboid = wand.createCuboid();
+        if ( cuboid != null )
         {
-            session.getBuilder().setBorder( new Cuboid( wand.getPosition1(), wand.getPosition2() ) );
+            session.getBuilder().setBorder( cuboid );
             sender.sendMessage( ChatColor.GRAY + "You have set a border" );
             return CommandReason.OK;
         }
         sender.sendMessage( ChatColor.RED + "You must set a region.!" );
         return CommandReason.SOMETHING_ELSE;
+    }
+
+    @SubCommand(
+            subcmd = "protect",
+            max_args = 2,
+            usage = {"blue,red"},
+            builder_cmd = true,
+            setup_cmd = true,
+            wand_usage = true
+    )
+    public CommandReason setProtectCommand( Player sender, String[] args )
+    {
+        Team team = Team.get( args[ 0 ] );
+        if ( team != null )
+        {
+            SetupSession session = GameBuilder.getSession( sender );
+            Wand wand = session.getWand();
+            Cuboid cuboid = wand.createCuboid();
+            if ( cuboid != null )
+            {
+                if ( team == Team.RED )
+                    session.getBuilder().setRedSpawnCuboid( cuboid );
+                else
+                    session.getBuilder().setBlueSpawnCuboid( cuboid );
+                sender.sendMessage( ChatColor.GRAY + "You have set a zone to protect " + team + ChatColor.GRAY + " spawn.!" );
+                return CommandReason.OK;
+            }
+            sender.sendMessage( ChatColor.RED + "You must set a region.!" );
+            return CommandReason.SOMETHING_ELSE;
+        }
+        return CommandReason.ERROR;
     }
 
     @SubCommand(
@@ -463,6 +496,8 @@ public class SubCommandListener
         checkLocation( sender, "red-spawn", gBuilder.getRedSpawn() );
         checkLocation( sender, "blue-spawn", gBuilder.getBlueSpawn() );
         checkLocation( sender, "border", gBuilder.getBorder() );
+        checkLocation( sender, "red-spawn-cuboid", gBuilder.getRedSpawnCuboid() );
+        checkLocation( sender, "blue-spawn-cuboid", gBuilder.getBlueSpawnCuboid() );
         sender.sendMessage( ChatColor.GREEN + "✔" + ChatColor.GRAY + "You set that location" );
         sender.sendMessage( ChatColor.RED + "✖" + ChatColor.GRAY + "You do not set that location" );
         return CommandReason.OK;
