@@ -71,3 +71,14 @@ items:
   quit:
     name: '&c&lReturn to lobby &7(Right Click)'
     position: 8
+titles:
+  enabled: true
+  #this title will show up when the countdown is <5 seconds
+  game-countdown:
+    title: "&e&l%count%"
+    subtitle: "Prepare to fight!"
+  #
+  finish:
+    title: "%color_team%&l%team_name%"
+    subtitle: "&7won the game!"
+

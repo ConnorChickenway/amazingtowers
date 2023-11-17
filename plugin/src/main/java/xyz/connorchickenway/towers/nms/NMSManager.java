@@ -1,9 +1,11 @@
 package xyz.connorchickenway.towers.nms;
 
+import org.bukkit.entity.Player;
 import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.nms.nms.BlockLatest;
 import xyz.connorchickenway.towers.nms.nms.VersionSupport_Latest;
 import xyz.connorchickenway.towers.utilities.ManagerController;
+import xyz.connorchickenway.towers.utilities.StringUtils;
 
 public class NMSManager extends ManagerController
 {
@@ -59,6 +61,11 @@ public class NMSManager extends ManagerController
     public static NMSManager get()
     {
         return AmazingTowers.getInstance().getNMSManager();
+    }
+
+    public static void sendTitle( Player player, String title, String subTitle )
+    {
+        get().getNMS().sendTitle( player, StringUtils.color( title ), StringUtils.color( subTitle ), 0, 50, 20 );
     }
 
 }

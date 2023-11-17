@@ -44,6 +44,7 @@ import xyz.connorchickenway.towers.utilities.vault.Reward;
 import xyz.connorchickenway.towers.utilities.vault.RewardsUtils;
 
 import static xyz.connorchickenway.towers.game.lang.placeholder.Placeholder.*;
+import static xyz.connorchickenway.towers.utilities.StringUtils.replacePlaceholders;
 
 public class Game
 {
@@ -222,6 +223,15 @@ public class Game
                     Placeholder.builder(
                         pair( COUNT ,  this.getSeconds() ),
                         pair( SECONDS , this.getSeconds() ) ) );
+                if ( this.getSeconds() <= 5 )
+                {
+                    if ( StaticConfiguration.is_title_enabled )
+                        players.forEach( gamePlayer ->
+                                NMSManager.sendTitle( gamePlayer.toBukkitPlayer(),
+                                        replacePlaceholders( StaticConfiguration.game_countdown_title,
+                                                builder( pair( COUNT, this.getSeconds() ) ) ),
+                                        StaticConfiguration.game_countdown_subtitle ) );
+                }
             }
 
             @Override
@@ -324,6 +334,13 @@ public class Game
             builder( 
                 pair( COLOR_TEAM , winnerTeam.getChatColor() ),
                 pair( TEAM_NAME, winnerTeam.getConfigName() ) ) );
+        if ( StaticConfiguration.is_title_enabled )
+            players.forEach( gamePlayer ->
+                    NMSManager.sendTitle( gamePlayer.toBukkitPlayer(),
+                        replacePlaceholders( StaticConfiguration.win_title,
+                            builder( pair( COLOR_TEAM, winnerTeam.getChatColor() ),
+                                    pair( TEAM_NAME, winnerTeam.getConfigName() ) ) ),
+                            StaticConfiguration.win_subtitle ) );
         gRunnable = taskMap.get( TaskId.FINISH_TASK );
         if ( gRunnable != null )
             gRunnable.startTimer( false );

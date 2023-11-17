@@ -66,6 +66,13 @@ public class StaticConfiguration
     public static boolean is_message_enabled;
     public static String reward_lang;
 
+    //TITLE
+    public static boolean is_title_enabled;
+    public static String game_countdown_title;
+    public static String game_countdown_subtitle;
+    public static String win_title;
+    public static String win_subtitle;
+
     public static void load()
     {
         FileConfiguration config = plugin.getConfig();
@@ -123,6 +130,15 @@ public class StaticConfiguration
         by_playing_value = config.getInt( "rewards.value.by_playing", 10 );
         is_message_enabled = config.getBoolean( "rewards.message.enabled", true );
         reward_lang = StringUtils.color( config.getString( "rewards.message.lang", "&a+%coins% &7coins" ) );
+
+        //TITLE
+        is_title_enabled = config.getBoolean( "titles.enabled", true );
+        String str = "titles.game-countdown";
+        game_countdown_title = config.getString( str + ".title", "&e&l%count%" );
+        game_countdown_subtitle = config.getString( str + ".subtitle", "Prepare to fight!" );
+        str = "titles.finish";
+        win_title = config.getString( str + ".title", "%color_team%&l%team_name%" );
+        win_subtitle = config.getString( str + "subtitle", "&7won the game!" );
     }
 
     private static ItemStack createItem( Team team, String type )
