@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -449,7 +448,7 @@ public class SubCommandListener
     }
 
     @SubCommand(
-            subcmd = "protect",
+            subcmd = "protectspawn",
             max_args = 2,
             usage = {"blue,red"},
             builder_cmd = true,
@@ -498,6 +497,8 @@ public class SubCommandListener
         checkLocation( sender, "border", gBuilder.getBorder() );
         checkLocation( sender, "red-spawn-cuboid", gBuilder.getRedSpawnCuboid() );
         checkLocation( sender, "blue-spawn-cuboid", gBuilder.getBlueSpawnCuboid() );
+        checkLocation( sender, "red-pool", gBuilder.getRedPool() );
+        checkLocation( sender, "blue-pool", gBuilder.getBluePool() );
         sender.sendMessage( ChatColor.GREEN + "✔" + ChatColor.GRAY + "You set that location" );
         sender.sendMessage( ChatColor.RED + "✖" + ChatColor.GRAY + "You do not set that location" );
         return CommandReason.OK;

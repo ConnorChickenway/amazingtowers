@@ -187,10 +187,20 @@ public class GameBuilder
     {
         this.bluePool = bluePool;
     }
-    
+
+    public Cuboid getBluePool()
+    {
+        return bluePool;
+    }
+
     public void setRedPool( Cuboid redPool )
     {
         this.redPool = redPool;
+    }
+
+    public Cuboid getRedPool()
+    {
+        return redPool;
     }
 
     public void setPool( Cuboid cuboid, Team team )
