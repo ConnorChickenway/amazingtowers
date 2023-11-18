@@ -92,11 +92,13 @@ public class BukkitWorldLoader implements GameWorld
             world.setGameRule( GameRule.DO_MOB_SPAWNING, false );
             world.setGameRule( GameRule.MOB_GRIEFING, false );
             world.setGameRule( GameRule.DO_DAYLIGHT_CYCLE, false );
+            world.setGameRule( GameRule.ANNOUNCE_ADVANCEMENTS, false );
         }else 
         {
             world.setGameRuleValue( "doMobSpawning", "false" );
             world.setGameRuleValue( "mobGriefing", "false" );
             world.setGameRuleValue( "doDaylightCycle", "false" );
+            world.setGameRuleValue( "announceAdvancements", "false" );
         }
         
         return world;

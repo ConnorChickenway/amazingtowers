@@ -10,6 +10,8 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import xyz.connorchickenway.towers.nms.NMSVersion;
 
 import static xyz.connorchickenway.towers.AmazingTowers.SLIME_PLUGIN;
@@ -37,6 +39,11 @@ public class SlimeWorldLoader implements GameWorld
         {
             SlimeWorld slimeWorld = SLIME_PLUGIN.loadWorld( loader, worldName, true, getProperties() );
             SLIME_PLUGIN.generateWorld( slimeWorld );
+            World world = this.getWorld();
+            if ( NMSVersion.isNewerVersion )
+                world.setGameRule( GameRule.ANNOUNCE_ADVANCEMENTS, false );
+            else
+                world.setGameRuleValue( "announceAdvancements", "false" );
             return true;
         } catch( Exception ignore ){}
         return false;
