@@ -143,7 +143,9 @@ public class ProtectionListener implements Listener
         if ( game != null )
         {
             if ( game.getRedSpawnCuboid().isIn( fallingBlock.getLocation() ) ||
-                    game.getBlueSpawnCuboid().isIn( fallingBlock.getLocation() ) )
+                    game.getBlueSpawnCuboid().isIn( fallingBlock.getLocation() ) ||
+                    game.getRed().getPool().isIn( fallingBlock.getLocation() ) ||
+                    game.getBlue().getPool().isIn( fallingBlock.getLocation() ))
             {
                 Block block = event.getBlock();
                 block.getWorld().dropItemNaturally( block.getLocation(),
