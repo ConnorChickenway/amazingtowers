@@ -10,9 +10,9 @@ import xyz.connorchickenway.towers.utilities.ItemUtils;
 public class SetupSession 
 {
     
-    private Player player;
-    private GameBuilder gameBuilder;
-    private Wand wand;
+    private final Player player;
+    private final GameBuilder gameBuilder;
+    private final Wand wand;
 
     public SetupSession( Player player )
     {
@@ -22,7 +22,8 @@ public class SetupSession
         PlayerInventory inventory = player.getInventory();
         inventory.clear();
         inventory.addItem( ItemUtils.wandItemStack );
-        player.setFlySpeed( 0.4f );
+        player.setGameMode( org.bukkit.GameMode.CREATIVE );
+        player.setFlying( true );
     }
     
     public Player getPlayer()
