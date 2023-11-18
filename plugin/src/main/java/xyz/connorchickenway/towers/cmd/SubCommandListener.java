@@ -504,9 +504,32 @@ public class SubCommandListener
         return CommandReason.OK;
     }
 
+    @SubCommand(
+            subcmd = "variables",
+            max_args = 1,
+            usage = "",
+            builder_cmd = true,
+            setup_cmd = true
+    )
+    public CommandReason variablesCommand( Player sender, String[] args )
+    {
+        GameBuilder gBuilder = GameBuilder.getSession( sender ).getBuilder();
+        sender.sendMessage( ChatColor.GRAY + "Variables:" );
+        checkVariable( sender, "min-players", gBuilder.getMinPlayers() );
+        checkVariable( sender, "max-players", gBuilder.getMinPlayers() );
+        checkVariable( sender, "count", gBuilder.getCount() );
+        checkVariable( sender, "max-points", gBuilder.getMaxPoints() );
+        return CommandReason.OK;
+    }
+
     private void checkLocation( Player player, String nameLocation, Object location )
     {
         player.sendMessage( StringUtils.color( " &7- " + nameLocation + " " + ( location != null ? "&a✔" : "&c✖" ) ) );
+    }
+
+    private void checkVariable( Player player, String variableName, Object variable )
+    {
+        player.sendMessage( StringUtils.color( " &7- " + variableName + " : " + ( variable != null ? "&a" + variable : "&cnull" ) ) );
     }
 
 }
