@@ -368,12 +368,14 @@ public class SubCommandListener
             boolean unload = gameWorld.unload( true );
             if ( unload )
                 gameWorld.load();
+        }else
+        {
+            gameWorld.getWorld().save();
         }
         gBuilder.save();
         GameManager.get().addGame( gBuilder.build() );
         sender.sendMessage( ChatColor.GREEN + "Arena " + gBuilder.getName() + " has been built.!" );
         MetadataUtils.remove( sender, "setup-sesion" );
-        sender.setFlySpeed( 0.2f );
         sender.getInventory().clear();
         return CommandReason.OK;
     }
@@ -516,7 +518,7 @@ public class SubCommandListener
         GameBuilder gBuilder = GameBuilder.getSession( sender ).getBuilder();
         sender.sendMessage( ChatColor.GRAY + "Variables:" );
         checkVariable( sender, "min-players", gBuilder.getMinPlayers() );
-        checkVariable( sender, "max-players", gBuilder.getMinPlayers() );
+        checkVariable( sender, "max-players", gBuilder.getMaxPlayers() );
         checkVariable( sender, "count", gBuilder.getCount() );
         checkVariable( sender, "max-points", gBuilder.getMaxPoints() );
         return CommandReason.OK;

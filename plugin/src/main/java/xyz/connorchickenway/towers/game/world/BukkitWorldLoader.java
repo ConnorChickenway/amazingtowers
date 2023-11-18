@@ -13,6 +13,7 @@ import org.bukkit.generator.ChunkGenerator;
 import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.FileUtils;
+import xyz.connorchickenway.towers.utilities.Logger;
 
 public class BukkitWorldLoader implements GameWorld
 {
@@ -46,7 +47,7 @@ public class BukkitWorldLoader implements GameWorld
         {
             unload = Bukkit.unloadWorld( world, save );
             if ( unload )
-                FileUtils.delete( new File( worldName ) );  
+                FileUtils.delete( new File( worldName ) );
         }
         return unload;
     }
