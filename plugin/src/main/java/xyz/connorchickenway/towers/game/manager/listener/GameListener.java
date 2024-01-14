@@ -114,7 +114,10 @@ public class GameListener implements Listener
         if ( game.isState( GameState.GAME ) )
         {
             if ( event.getCause() == DamageCause.VOID )
+            {
                 ( ( HumanEntity ) entity ).setHealth( 0.0D );
+                event.setCancelled( true );
+            }
         }
         else
             event.setCancelled( true );

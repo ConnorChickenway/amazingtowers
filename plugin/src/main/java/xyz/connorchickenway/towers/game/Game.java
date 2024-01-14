@@ -471,20 +471,16 @@ public class Game
         event.setCancelled( true );
         Player player = event.getPlayer();
         String eventMsg = event.getMessage();
-        StringBuilder stringBuilder = new StringBuilder();
         Team team = getTeam( player.getUniqueId() );
+        System.out.println( eventMsg );
         if ( state == GameState.LOBBY || state == GameState.STARTING || team == null )
         {
-            stringBuilder.append( StringUtils.replacePlaceholders( StaticConfiguration.normal_format,
-                builder(
-                    pair( PREFIX, player ),
-                    pair( PLAYER_NAME, player ),
-                    pair( MESSAGE, eventMsg )
-                ) ) );
-            players.forEach( gPlayer -> gPlayer.sendMessage( stringBuilder.toString() ) );
+            String stringBuilder = StringUtils.replacePlaceholders( StaticConfiguration.normal_format,
+                    builder( pair( PREFIX, player ), pair( PLAYER_NAME, player ), pair( MESSAGE, eventMsg ) ) );
+            players.forEach( gPlayer -> gPlayer.sendMessage( stringBuilder ) );
             return;    
         }   
-        team.message( player, stringBuilder.toString() );
+        team.message( player, eventMsg );
     }
 
     private String getWinnerMessage( Team winnerTeam )
