@@ -20,77 +20,63 @@ import xyz.connorchickenway.towers.utilities.ItemUtils;
 import xyz.connorchickenway.towers.utilities.MetadataUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
-public class SetupListener implements Listener
-{
+public class SetupListener implements Listener {
 
-    @EventHandler( ignoreCancelled = true )
-    public void onInteract( PlayerInteractEvent event )
-    {
+    @EventHandler(ignoreCancelled = true)
+    public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if ( ItemUtils.wandItemStack.equals( event.getItem() ) && hasSession( player ) )
-        {    
+        if (ItemUtils.wandItemStack.equals(event.getItem()) && hasSession(player)) {
             Action action = event.getAction();
-            Wand wand = GameBuilder.getSession( player ).getWand();
-            Location blockLocation =  event.getClickedBlock().getLocation();
-            event.setCancelled( true );
+            Wand wand = GameBuilder.getSession(player).getWand();
+            Location blockLocation = event.getClickedBlock().getLocation();
+            event.setCancelled(true);
             boolean set = false;
-            if ( action == Action.LEFT_CLICK_BLOCK )
-            {
-                if ( blockLocation.equals( wand.getPosition1() ) ) return;
-                set = wand.setPosition1( blockLocation );
+            if (action == Action.LEFT_CLICK_BLOCK) {
+                if (blockLocation.equals(wand.getPosition1())) return;
+                set = wand.setPosition1(blockLocation);
+            } else if (action == Action.RIGHT_CLICK_BLOCK) {
+                if (blockLocation.equals(wand.getPosition2())) return;
+                set = wand.setPosition2(blockLocation);
             }
-            else if ( action == Action.RIGHT_CLICK_BLOCK )
-            {
-                if ( blockLocation.equals( wand.getPosition2() ) ) return;
-                set = wand.setPosition2( blockLocation ); 
-            }
-            if ( set )
-            {
-                String str = ChatColor.GRAY + "%s position set to (x:%.1f y:%d z:%.1f )"; 
-                player.sendMessage( String.format( str , ( action == Action.LEFT_CLICK_BLOCK ? "First" : "Second" ), 
-                        blockLocation.getX(), blockLocation.getBlockY(), blockLocation.getZ() ) );
+            if (set) {
+                String str = ChatColor.GRAY + "%s position set to (x:%.1f y:%d z:%.1f )";
+                player.sendMessage(String.format(str, (action == Action.LEFT_CLICK_BLOCK ? "First" : "Second"),
+                        blockLocation.getX(), blockLocation.getBlockY(), blockLocation.getZ()));
             }
         }
-    } 
-    
+    }
+
     @EventHandler
-    public void onQuit( PlayerQuitEvent event )
-    {
+    public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        if ( hasSession( player ) )
-        {
-            SetupSession session = GameBuilder.getSession( player );
+        if (hasSession(player)) {
+            SetupSession session = GameBuilder.getSession(player);
             GameWorld gWorld = session.getBuilder().getGameWorld();
-            if ( gWorld != null )
-            {
-                World defaultWorld = StaticConfiguration.spawn_location != null ? 
-                                    StaticConfiguration.spawn_location.getWorld() : Bukkit.getWorld( StringUtils.DEFAULT_WORLD_NAME );
-                for ( Player pl : gWorld.getWorld().getPlayers() )
-                    pl.teleport( defaultWorld.getSpawnLocation() );
-                if ( player.getWorld() != defaultWorld )
-                    player.teleport( defaultWorld.getSpawnLocation() );    
-                gWorld.unload( false );
-                if ( gWorld instanceof SlimeWorldLoader )
-                {
+            if (gWorld != null) {
+                World defaultWorld = StaticConfiguration.spawn_location != null ?
+                        StaticConfiguration.spawn_location.getWorld() : Bukkit.getWorld(StringUtils.DEFAULT_WORLD_NAME);
+                for (Player pl : gWorld.getWorld().getPlayers())
+                    pl.teleport(defaultWorld.getSpawnLocation());
+                if (player.getWorld() != defaultWorld)
+                    player.teleport(defaultWorld.getSpawnLocation());
+                gWorld.unload(false);
+                if (gWorld instanceof SlimeWorldLoader) {
                     SlimeLoader loader = SlimeWorldLoader.getLoader();
-                    try
-                    {
-                        loader.deleteWorld( gWorld.getWorldName() );
-                    } catch ( Exception e )
-                    {
-                        
-                    } 
+                    try {
+                        loader.deleteWorld(gWorld.getWorldName());
+                    } catch (Exception e) {
+
+                    }
                 }
             }
-            player.setFlySpeed( 0.2f );
+            player.setFlySpeed(0.2f);
             player.getInventory().clear();
-            MetadataUtils.remove( player, "setup-session" );
+            MetadataUtils.remove(player, "setup-session");
         }
     }
 
-    private boolean hasSession( Player player )
-    {
-        return MetadataUtils.has( player , "setup-session" );
+    private boolean hasSession(Player player) {
+        return MetadataUtils.has(player, "setup-session");
     }
-    
+
 }

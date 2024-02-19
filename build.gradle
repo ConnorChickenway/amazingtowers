@@ -1,22 +1,22 @@
 allprojects {
     apply plugin: 'java'
     sourceCompatibility = 1.8
-	targetCompatibility = 1.8
-	version = 0.1
-	group = "xyz.connorchickenway"
-	repositories {
+    targetCompatibility = 1.8
+    version = 0.1
+    group = "xyz.connorchickenway"
+    repositories {
         mavenCentral()
-		maven {
-			url = 'https://maven.elmakers.com/repository/'
+        maven {
+            url = 'https://maven.elmakers.com/repository/'
 
-			content {
-				includeGroup 'org.bukkit'
-				includeGroup 'org.spigotmc'
-			}
-		}
-		maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-		maven { url = 'https://oss.sonatype.org/content/repositories/central' }
-		maven { url = 'https://maven.enginehub.org/repo/' }
-		maven { url 'https://jitpack.io' }
+            content {
+                includeGroup 'org.bukkit'
+                includeGroup 'org.spigotmc'
+            }
+        }
+        maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+        maven { url = 'https://maven.enginehub.org/repo/' }
+        maven { url = 'https://jitpack.io' }
     }
 }

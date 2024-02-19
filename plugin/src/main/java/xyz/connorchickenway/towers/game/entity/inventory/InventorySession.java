@@ -4,12 +4,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scoreboard.Scoreboard;
-
 import xyz.connorchickenway.towers.game.entity.GamePlayer;
 
-public class InventorySession 
-{
-    
+public class InventorySession {
+
     private final GamePlayer gamePlayer;
 
     private ItemStack[] armorContents, contents;
@@ -17,13 +15,11 @@ public class InventorySession
     private int food;
     private Scoreboard previousScoreboard;
 
-    public InventorySession( GamePlayer gamePlayer )
-    {
+    public InventorySession(GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
     }
 
-    public void save()
-    {
+    public void save() {
         Player player = gamePlayer.toBukkitPlayer();
         PlayerInventory playerInventory = player.getInventory();
         this.armorContents = playerInventory.getArmorContents();
@@ -33,20 +29,18 @@ public class InventorySession
         this.previousScoreboard = player.getScoreboard();
     }
 
-    public void load()
-    {
+    public void load() {
         Player player = gamePlayer.toBukkitPlayer();
         PlayerInventory pInventory = player.getInventory();
         pInventory.clear();
-        pInventory.setArmorContents( armorContents );
-        pInventory.setContents( contents );
-        player.setHealth( health );
-        player.setFoodLevel( food );
-        player.setScoreboard( previousScoreboard );
+        pInventory.setArmorContents(armorContents);
+        pInventory.setContents(contents);
+        player.setHealth(health);
+        player.setFoodLevel(food);
+        player.setScoreboard(previousScoreboard);
     }
 
-    public void clear()
-    {
+    public void clear() {
         this.armorContents = null;
         this.contents = null;
         this.health = -1;

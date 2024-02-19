@@ -1,8 +1,7 @@
 package xyz.connorchickenway.towers.game.lang.placeholder;
 
-public interface TwoArgumentPlaceholder extends Placeholder
-{
+public interface TwoArgumentPlaceholder extends Placeholder {
 
-    public String perform( Object firstObj, Object secondObj );
+    public String perform(Object firstObj, Object secondObj);
 
 }

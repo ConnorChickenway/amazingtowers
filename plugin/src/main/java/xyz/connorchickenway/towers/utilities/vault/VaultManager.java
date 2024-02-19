@@ -10,69 +10,58 @@ import xyz.connorchickenway.towers.game.entity.GamePlayer;
 import xyz.connorchickenway.towers.utilities.Logger;
 import xyz.connorchickenway.towers.utilities.ManagerController;
 
-public class VaultManager extends ManagerController
-{
+public class VaultManager extends ManagerController {
 
     private Economy economy;
     private Chat chat;
 
-    public VaultManager( AmazingTowers plugin )
-    {
-        super( plugin );
+    public VaultManager(AmazingTowers plugin) {
+        super(plugin);
     }
 
     @Override
-    public void load()
-    {
-        if ( !plugin.getServer().getPluginManager().isPluginEnabled( "Vault" ) ) return;
-        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration( Economy.class );
-        if ( rsp != null )
+    public void load() {
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("Vault")) return;
+        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp != null)
             this.economy = rsp.getProvider();
-        Logger.info( "Economy: " + (economy != null ? economy.getName() : "NONE") );
-        RegisteredServiceProvider<Chat> rspc = plugin.getServer().getServicesManager().getRegistration( Chat.class );
-        if ( rspc != null )
+        Logger.info("Economy: " + (economy != null ? economy.getName() : "NONE"));
+        RegisteredServiceProvider<Chat> rspc = plugin.getServer().getServicesManager().getRegistration(Chat.class);
+        if (rspc != null)
             chat = rspc.getProvider();
-        Logger.info( "Chat: " + (chat != null ? chat.getName() : "NONE") );
+        Logger.info("Chat: " + (chat != null ? chat.getName() : "NONE"));
     }
 
     @Override
-    public void disable()
-    {
+    public void disable() {
 
     }
 
-    public boolean deposit( Player player, double x )
-    {
-        if ( hasEconomy() )
-        {
-            EconomyResponse economyResponse = economy.depositPlayer( player, x );
+    public boolean deposit(Player player, double x) {
+        if (hasEconomy()) {
+            EconomyResponse economyResponse = economy.depositPlayer(player, x);
             return economyResponse.transactionSuccess();
         }
         return false;
     }
 
-    public boolean deposit( GamePlayer gamePlayer, double x )
-    {
-        return deposit( gamePlayer.toBukkitPlayer(), x );
+    public boolean deposit(GamePlayer gamePlayer, double x) {
+        return deposit(gamePlayer.toBukkitPlayer(), x);
     }
 
-    public boolean hasEconomy()
-    {
+    public boolean hasEconomy() {
         return economy != null;
     }
 
-    public Economy getEconomy()
-    {
+    public Economy getEconomy() {
         return economy;
     }
 
-    public boolean hasChat()
-    {
+    public boolean hasChat() {
         return chat != null;
     }
 
-    public Chat getChat()
-    {
+    public Chat getChat() {
         return chat;
     }
 

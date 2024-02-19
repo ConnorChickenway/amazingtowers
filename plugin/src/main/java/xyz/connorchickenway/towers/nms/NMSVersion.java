@@ -1,11 +1,9 @@
 package xyz.connorchickenway.towers.nms;
 
 import org.bukkit.Bukkit;
-
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
-public enum NMSVersion
-{
+public enum NMSVersion {
 
     V1_8_R1,
     V1_8_R2,
@@ -31,35 +29,30 @@ public enum NMSVersion
     V1_20_R1;
 
 
-    public boolean isAboveOrEqual( NMSVersion compare )
-    {
+    public boolean isAboveOrEqual(NMSVersion compare) {
         return ordinal() >= compare.ordinal();
     }
 
     public static boolean isNewerVersion;
     public static NMSVersion nmsVersion;
 
-    static
-    {
+    static {
         String version = null;
         try {
             version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        }
-        catch (final ArrayIndexOutOfBoundsException a) {
+        } catch (final ArrayIndexOutOfBoundsException a) {
             a.printStackTrace();
         }
-        nmsVersion = StringUtils.searchEnum( NMSVersion.class , version );
-        if ( nmsVersion != null )
-            isNewerVersion = nmsVersion.isAboveOrEqual( NMSVersion.V1_13_R1 );
+        nmsVersion = StringUtils.searchEnum(NMSVersion.class, version);
+        if (nmsVersion != null)
+            isNewerVersion = nmsVersion.isAboveOrEqual(NMSVersion.V1_13_R1);
     }
 
-    public static boolean hasSupport()
-    {
+    public static boolean hasSupport() {
         return nmsVersion != null;
     }
 
-    public static boolean is1_13()
-    {
+    public static boolean is1_13() {
         return nmsVersion == NMSVersion.V1_13_R1 || nmsVersion == NMSVersion.V1_13_R2;
     }
 

@@ -36,10 +36,10 @@ options:
         finish: '&5Finish'
         reload: '&0Reloading'
       lines:
-      - '&lTheTowers' 
-      - '%status%'
-      - '&nMap: %map%'
-      - '&7%online_players%/%max_players%'
+        - '&lTheTowers'
+        - '%status%'
+        - '&nMap: %map%'
+        - '&7%online_players%/%max_players%'
 
   bungee-mode:
     server_name: 'towers_lobby'
