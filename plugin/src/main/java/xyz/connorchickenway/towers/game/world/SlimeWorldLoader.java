@@ -1,6 +1,5 @@
 package xyz.connorchickenway.towers.game.world;
 
-import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
@@ -12,7 +11,6 @@ import xyz.connorchickenway.towers.nms.NMSVersion;
 import xyz.connorchickenway.towers.utilities.Logger;
 
 import java.io.File;
-import java.io.IOException;
 
 import static xyz.connorchickenway.towers.AmazingTowers.SLIME_PLUGIN;
 
