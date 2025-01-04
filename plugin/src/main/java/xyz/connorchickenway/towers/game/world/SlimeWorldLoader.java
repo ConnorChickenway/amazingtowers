@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import xyz.connorchickenway.towers.nms.NMSVersion;
+import xyz.connorchickenway.towers.utilities.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,8 @@ public class SlimeWorldLoader implements GameWorld {
             else
                 world.setGameRuleValue("announceAdvancements", "false");
             return true;
-        } catch (Exception ignore) {
+        } catch (Exception ex) {
+            Logger.error("There was an error loading the world " + worldName, ex);
         }
         return false;
     }
