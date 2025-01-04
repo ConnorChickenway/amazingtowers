@@ -27,8 +27,8 @@ public enum Lang {
     ALREADY_TEAM("already_team", "&7You're already on %color_team%&l%team_name% TEAM!"),
     JOIN_TEAM("join_team", "&7You joined %color_team%&l%team_name% TEAM!");
 
-    private String path;
-    private String[] def;
+    private final String path;
+    private final String[] def;
 
     Lang(String path, String... def) {
         this.path = path;
@@ -87,12 +87,12 @@ public enum Lang {
                 if (k == null) continue;
                 list.add(k);
             }
-            LANG.put(value.toString(), list.toArray(new String[list.size()]));
+            LANG.put(value.toString(), list.toArray(new String[0]));
         }
     }
 
     public static Lang getLang(String path) {
-        return Arrays.asList(Lang.values()).stream().filter(lang -> lang.getPath().equals(path)).findFirst()
+        return Arrays.stream(Lang.values()).filter(lang -> lang.getPath().equals(path)).findFirst()
                 .orElse(null);
     }
 
