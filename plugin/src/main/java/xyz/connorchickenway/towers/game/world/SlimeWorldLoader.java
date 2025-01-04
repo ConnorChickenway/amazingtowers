@@ -48,15 +48,7 @@ public class SlimeWorldLoader implements GameWorld {
 
     @Override
     public boolean unload(boolean save) {
-        SlimeLoader loader = getLoader();
-        try {
-            Bukkit.unloadWorld(worldName, save);
-            loader.unlockWorld(worldName);
-            return true;
-        } catch (UnknownWorldException | IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return Bukkit.unloadWorld(worldName, save);
     }
 
     @Override
