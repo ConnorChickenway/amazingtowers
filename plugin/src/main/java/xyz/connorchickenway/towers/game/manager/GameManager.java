@@ -25,13 +25,12 @@ import xyz.connorchickenway.towers.utilities.StringUtils;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
+import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Map;
 
 public class GameManager extends ManagerController {
-
     private final Map<String, Game> games = Maps.newHashMap();
     private SignManager signManager;
     private final File gameFolder;
@@ -69,8 +68,12 @@ public class GameManager extends ManagerController {
                     JsonReader jsonReader = new JsonReader(new FileReader(arenaFile));
                     GameBuilder gBuilder = AmazingTowers.GSON.fromJson(jsonReader, GameBuilder.class);
                     jsonReader.close();
-                    if (!gBuilder.hasEverything()) {
-                        Logger.info("Cannot convert " + arenaFile.getName() + " file to arena because it lacks of something.");
+                    if (!gBuilder.hasEveryLocation()) {
+                        Logger.info("Cannot convert the " + arenaFile.getName() + " file to arena because it lacks some locations");
+                        continue;
+                    }
+                    if (!gBuilder.hasEveryVariable()) {
+                        Logger.info("Cannot convert the " + arenaFile.getName() + " file to arena because it lacks some variables");
                         continue;
                     }
                     GameWorld gameWorld = gBuilder.getWorldLoader() == WorldLoader.BUKKIT ? new BukkitWorldLoader(gBuilder.getName()) :
@@ -95,7 +98,7 @@ public class GameManager extends ManagerController {
                         try {
                             File signFile = new File(file, gBuilder.getName() + ".sign");
                             if (signFile.exists()) {
-                                dataInputStream = new DataInputStream(new FileInputStream(signFile));
+                                dataInputStream = new DataInputStream(Files.newInputStream(signFile.toPath()));
                                 int x = dataInputStream.readInt(),
                                         y = dataInputStream.readInt(),
                                         z = dataInputStream.readInt();
@@ -113,7 +116,7 @@ public class GameManager extends ManagerController {
                                 }
                             }
                         } catch (Exception ex) {
-                            Logger.info("Could not load the sign file because it lacks of data. " + gBuilder.getName() + ".sign file.!");
+                            Logger.info("Could not load the sign file: missing required data. " + gBuilder.getName() + ".sign!");
                         }
                         if (dataInputStream != null)
                             dataInputStream.close();

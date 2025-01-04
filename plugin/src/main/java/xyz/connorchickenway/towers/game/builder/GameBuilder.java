@@ -217,14 +217,18 @@ public class GameBuilder {
         return worldLoader;
     }
 
-    public boolean hasEverything() {
+    public boolean hasEveryLocation() {
         return lobby != null && ironGenerator != null &&
                 expGenerator != null && blueSpawn != null &&
-                redSpawn != null && minPlayers > 0 &&
-                maxPlayers > 0 && count > 0 &&
-                maxPoints > 0 && redPool != null &&
+                redSpawn != null && redPool != null &&
                 bluePool != null && border != null &&
                 blueSpawnCuboid != null && redSpawnCuboid != null;
+    }
+
+    public boolean hasEveryVariable() {
+        return minPlayers > 0 &&
+                maxPlayers > 0 && count > 0 &&
+                maxPoints > 0;
     }
 
     public Game build() {

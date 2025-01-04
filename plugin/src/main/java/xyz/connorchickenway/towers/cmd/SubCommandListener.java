@@ -38,8 +38,8 @@ public class SubCommandListener {
             subcmd = "config",
             max_args = 2,
             usage = {"reload", "config,scoreboard,lang"},
-            error = {"\u00A7cConfig name is incorrect.!",
-                    "\u00A77Config names: \u00A7aconfig, scoreboard, lang"},
+            error = {"§cConfig name is incorrect.!",
+                    "§7Config names: §aconfig, scoreboard, lang"},
             builder_cmd = false,
             wand_usage = false,
             can_console = true
@@ -65,8 +65,8 @@ public class SubCommandListener {
             subcmd = "setpool",
             max_args = 2,
             usage = {"blue|red"},
-            error = {"\u00A7cWrong team name.",
-                    "\u00a77Teams: \u00A7cred, \u00A79blue"},
+            error = {"§cWrong team name.",
+                    "§7Teams: §cred, §9blue"},
             builder_cmd = true,
             wand_usage = true,
             setup_cmd = true
@@ -92,7 +92,7 @@ public class SubCommandListener {
             subcmd = "setspawn",
             max_args = 2,
             usage = {"blue,red,lobby,iron,exp"},
-            error = {"\u00a7cInvalid argument.", ""},
+            error = {"§cInvalid argument.", ""},
             builder_cmd = true,
             setup_cmd = true
     )
@@ -134,7 +134,7 @@ public class SubCommandListener {
             subcmd = "setminplayers",
             max_args = 2,
             usage = {"min-players"},
-            error = {"\u00a7cYou must select a number."},
+            error = {"§cYou must select a number."},
             builder_cmd = true,
             setup_cmd = true
     )
@@ -154,7 +154,7 @@ public class SubCommandListener {
             gBuilder.setMinPlayers(x);
             sender.sendMessage(ChatColor.GRAY + "You have set " + ChatColor.GREEN + x + ChatColor.GRAY + " to min players.!");
             return CommandReason.OK;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignore) {
 
         }
         return CommandReason.ERROR;
@@ -164,7 +164,7 @@ public class SubCommandListener {
             subcmd = "setmaxplayers",
             max_args = 2,
             usage = {"max-players"},
-            error = {"\u00a7cYou must select a number."},
+            error = {"§cYou must select a number."},
             builder_cmd = true,
             setup_cmd = true
     )
@@ -184,7 +184,7 @@ public class SubCommandListener {
             gBuilder.setMaxPlayers(x);
             sender.sendMessage(ChatColor.GRAY + "You have set " + ChatColor.GREEN + x + ChatColor.GRAY + " to max players.!");
             return CommandReason.OK;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignore) {
 
         }
         return CommandReason.ERROR;
@@ -194,7 +194,7 @@ public class SubCommandListener {
             subcmd = "setcount",
             max_args = 2,
             usage = {"seconds"},
-            error = "\u00a7cYou must select a number.",
+            error = "§cYou must select a number.",
             builder_cmd = true,
             setup_cmd = true
     )
@@ -206,7 +206,7 @@ public class SubCommandListener {
             gBuilder.setCount(x);
             sender.sendMessage(ChatColor.GRAY + "You have set " + ChatColor.GREEN + x + ChatColor.GRAY + " to count.!");
             return CommandReason.OK;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignore) {
 
         }
         return CommandReason.ERROR;
@@ -216,7 +216,7 @@ public class SubCommandListener {
             subcmd = "setmaxpoints",
             max_args = 2,
             usage = {"points"},
-            error = "\u00a7cYou must select a number.",
+            error = "§cYou must select a number.",
             builder_cmd = true,
             setup_cmd = true
     )
@@ -228,7 +228,7 @@ public class SubCommandListener {
             gBuilder.setMaxPoints(x);
             sender.sendMessage(ChatColor.GRAY + "You have set " + ChatColor.GREEN + x + ChatColor.GRAY + " to max points.!");
             return CommandReason.OK;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignore) {
 
         }
         return CommandReason.ERROR;
@@ -310,8 +310,12 @@ public class SubCommandListener {
     )
     public CommandReason buildCommand(Player sender, String[] args) {
         GameBuilder gBuilder = GameBuilder.getSession(sender).getBuilder();
-        if (!gBuilder.hasEverything()) {
+        if (!gBuilder.hasEveryLocation()) {
             sender.sendMessage(ChatColor.RED + "You cannot build an arena because you must set every location.!");
+            return CommandReason.SOMETHING_ELSE;
+        }
+        if (!gBuilder.hasEveryVariable()) {
+            sender.sendMessage(ChatColor.RED + "You cannot build an arena because you must set every variable.!");
             return CommandReason.SOMETHING_ELSE;
         }
         GameWorld gameWorld = gBuilder.getGameWorld();
