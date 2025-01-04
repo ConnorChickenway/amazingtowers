@@ -115,7 +115,7 @@ public class CommandManager extends ManagerController implements CommandExecutor
         }
         if (!setup)
             messageList.add(StringUtils.color("  &8-&7/" + label + " setup"));
-        sender.sendMessage(messageList.toArray(new String[messageList.size()]));
+        sender.sendMessage(messageList.toArray(new String[0]));
     }
 
     @Override
