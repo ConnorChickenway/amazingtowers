@@ -15,8 +15,6 @@ public interface GameWorld {
         return Bukkit.getWorld(getWorldName());
     }
 
-    ;
-
     String getWorldName();
 
     void backup();

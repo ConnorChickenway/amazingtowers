@@ -232,8 +232,6 @@ public class Game {
             public void doCancelStuff() {
             }
 
-            ;
-
             @Override
             public boolean cancelTask() {
                 return isState(GameState.FINISH);
@@ -325,8 +323,6 @@ public class Game {
                     reloadArena();
                 }
 
-                ;
-
                 final AtomicInteger counter = new AtomicInteger(0);
 
                 @Override
@@ -346,8 +342,7 @@ public class Game {
     }
 
     private void teleportPlayers(Team winnerTeam) {
-        players.forEach(gamePlayer ->
-        {
+        players.forEach(gamePlayer -> {
             RewardsUtils.deposit(gamePlayer, Reward.BY_PLAYING);
             if (winnerTeam.isInTeam(gamePlayer.getUniqueId()))
                 RewardsUtils.deposit(gamePlayer, Reward.WIN);
