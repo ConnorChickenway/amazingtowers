@@ -60,7 +60,7 @@ public class SlimeWorldLoader implements GameWorld {
 
     @Override
     public File getBackupFolder() {
-        throw new UnsupportedOperationException("Unimplemented method 'getWorldName'");
+        return null;
     }
 
     public static SlimePropertyMap getProperties() {
@@ -74,7 +74,7 @@ public class SlimeWorldLoader implements GameWorld {
     }
 
     public static SlimeLoader getLoader() {
-        return SLIME_PLUGIN.getLoader("file");
+        return SLIME_PLUGIN.getLoader("slime_loader");
     }
 
 }

@@ -255,8 +255,8 @@ public class SubCommandListener {
         WorldLoader worldLoader = StringUtils.searchEnum(WorldLoader.class, args[1]);
         if (worldLoader == null)
             return CommandReason.WRONG_ARGS;
-        GameWorld gameWorld = null;
-        World world = null;
+        GameWorld gameWorld;
+        World world;
         if (worldLoader == WorldLoader.BUKKIT) {
             World w = Bukkit.getWorld(arenaName),
                     defaultWorld = Bukkit.getWorld(StringUtils.DEFAULT_WORLD_NAME);
@@ -268,12 +268,12 @@ public class SubCommandListener {
             gameWorld = new BukkitWorldLoader(world);
         } else {
             if (SLIME_PLUGIN != null) {
-                SlimeLoader loader = SLIME_PLUGIN.getLoader("file");
                 if (Bukkit.getWorld(arenaName) != null) {
                     sender.sendMessage(ChatColor.RED + "There is a world with that name.!");
                     return CommandReason.SOMETHING_ELSE;
                 }
                 try {
+                    SlimeLoader loader = SlimeWorldLoader.getLoader();
                     SlimeWorld slimeWorld;
                     SlimePropertyMap slimeProperties = SlimeWorldLoader.getProperties();
                     if (loader.worldExists(arenaName))
@@ -336,7 +336,7 @@ public class SubCommandListener {
         gBuilder.save();
         GameManager.get().addGame(gBuilder.build());
         sender.sendMessage(ChatColor.GREEN + "Arena " + gBuilder.getName() + " has been built.!");
-        MetadataUtils.remove(sender, "setup-sesion");
+        MetadataUtils.remove(sender, "setup-session");
         sender.getInventory().clear();
         return CommandReason.OK;
     }

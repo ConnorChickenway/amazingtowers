@@ -20,8 +20,11 @@ import xyz.connorchickenway.towers.nms.NMSManager;
 import xyz.connorchickenway.towers.utilities.Cuboid;
 import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.Logger;
+import xyz.connorchickenway.towers.utilities.SlimeFileLoader;
 import xyz.connorchickenway.towers.utilities.location.Location;
 import xyz.connorchickenway.towers.utilities.vault.VaultManager;
+
+import java.io.File;
 
 public class AmazingTowers extends JavaPlugin {
 
@@ -47,6 +50,10 @@ public class AmazingTowers extends JavaPlugin {
         pm.registerEvents(new SetupListener(), this);
         if (pm.isPluginEnabled("SlimeWorldManager")) {
             SLIME_PLUGIN = (SlimePlugin) pm.getPlugin("SlimeWorldManager");
+            File file = new File(this.getDataFolder(), "slime_worlds");
+            if (!file.exists())
+                file.mkdir();
+            SLIME_PLUGIN.registerLoader("slime_loader", new SlimeFileLoader(file));
         }
         this.commandManager = new CommandManager(this);
         this.nmsManager = new NMSManager(this);
