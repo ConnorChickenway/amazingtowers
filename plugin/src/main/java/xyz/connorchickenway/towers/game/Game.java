@@ -423,7 +423,7 @@ public class Game {
         Player player = event.getPlayer();
         String eventMsg = event.getMessage();
         Team team = getTeam(player.getUniqueId());
-        System.out.println(eventMsg);
+        Logger.info(eventMsg);
         if (state == GameState.LOBBY || state == GameState.STARTING || team == null) {
             String stringBuilder = StringUtils.replacePlaceholders(StaticConfiguration.normal_format,
                     builder(pair(PREFIX, player), pair(PLAYER_NAME, player), pair(MESSAGE, eventMsg)));
