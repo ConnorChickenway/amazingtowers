@@ -56,7 +56,7 @@ public class SetupListener implements Listener {
                 World defaultWorld = StaticConfiguration.spawn_location != null ?
                         StaticConfiguration.spawn_location.getWorld() : Bukkit.getWorld(StringUtils.DEFAULT_WORLD_NAME);
                 for (Player pl : gWorld.getWorld().getPlayers())
-                    pl.teleport(defaultWorld.getSpawnLocation());
+                    if (pl != null ) pl.teleport(defaultWorld.getSpawnLocation());
                 if (player.getWorld() != defaultWorld)
                     player.teleport(defaultWorld.getSpawnLocation());
                 gWorld.unload(false);
@@ -64,7 +64,7 @@ public class SetupListener implements Listener {
                     SlimeLoader loader = SlimeWorldLoader.getLoader();
                     try {
                         loader.deleteWorld(gWorld.getWorldName());
-                    } catch (Exception e) {
+                    } catch (Exception ignore) {
 
                     }
                 }
