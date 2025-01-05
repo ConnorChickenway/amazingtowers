@@ -1,6 +1,4 @@
 rootProject.name = 'AmazingTowers'
-include('nms_latest')
-include('nms_interface')
-include('nms_1_8_R3')
-include('nms_1_12_R1')
-include('plugin')
+include 'plugin'
+include 'nms:1_12_R1', 'nms:1_8_R3', 'nms:latest', 'nms'
+

@@ -2,8 +2,6 @@ package xyz.connorchickenway.towers.nms;
 
 import org.bukkit.entity.Player;
 import xyz.connorchickenway.towers.AmazingTowers;
-import xyz.connorchickenway.towers.nms.nms.BlockLatest;
-import xyz.connorchickenway.towers.nms.nms.VersionSupport_Latest;
 import xyz.connorchickenway.towers.utilities.ManagerController;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
