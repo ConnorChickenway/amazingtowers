@@ -77,7 +77,7 @@ public class GameManager extends ManagerController {
                         continue;
                     }
                     GameWorld gameWorld = gBuilder.getWorldLoader() == WorldLoader.BUKKIT ? new BukkitWorldLoader(gBuilder.getName()) :
-                            AmazingTowers.SLIME_PLUGIN != null ? new SlimeWorldLoader(gBuilder.getName()) : null;
+                            AmazingTowers.SLIME_ADAPTER != null ? new SlimeWorldLoader(gBuilder.getName()) : null;
                     if (gameWorld != null) {
                         boolean load = gameWorld.load();
                         if (!load) {

@@ -1,4 +1,5 @@
 rootProject.name = 'AmazingTowers'
 include 'plugin'
 include 'nms:1_12_R1', 'nms:1_8_R3', 'nms:latest', 'nms'
+include 'slime', 'slime:swm'
 

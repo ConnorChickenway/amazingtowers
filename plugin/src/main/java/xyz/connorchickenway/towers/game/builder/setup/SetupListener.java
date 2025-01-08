@@ -1,6 +1,5 @@
 package xyz.connorchickenway.towers.game.builder.setup;
 
-import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import xyz.connorchickenway.towers.AmazingTowers;
 import xyz.connorchickenway.towers.config.StaticConfiguration;
 import xyz.connorchickenway.towers.game.builder.GameBuilder;
 import xyz.connorchickenway.towers.game.builder.setup.wand.Wand;
@@ -61,9 +61,8 @@ public class SetupListener implements Listener {
                     player.teleport(defaultWorld.getSpawnLocation());
                 gWorld.unload(false);
                 if (gWorld instanceof SlimeWorldLoader) {
-                    SlimeLoader loader = SlimeWorldLoader.getLoader();
                     try {
-                        loader.deleteWorld(gWorld.getWorldName());
+                        AmazingTowers.SLIME_ADAPTER.deleteWorld(gWorld.getWorldName());
                     } catch (Exception ignore) {
 
                     }

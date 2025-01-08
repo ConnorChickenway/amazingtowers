@@ -2,7 +2,6 @@ package xyz.connorchickenway.towers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.grinderwolf.swm.api.SlimePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -17,10 +16,11 @@ import xyz.connorchickenway.towers.game.entity.manager.EntityManager;
 import xyz.connorchickenway.towers.game.manager.GameManager;
 import xyz.connorchickenway.towers.game.scoreboard.manager.ScoreboardManager;
 import xyz.connorchickenway.towers.nms.NMSManager;
+import xyz.connorchickenway.towers.slime.SWMAdapter;
+import xyz.connorchickenway.towers.slime.SlimeAdapter;
 import xyz.connorchickenway.towers.utilities.Cuboid;
 import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.Logger;
-import xyz.connorchickenway.towers.utilities.SlimeFileLoader;
 import xyz.connorchickenway.towers.utilities.location.Location;
 import xyz.connorchickenway.towers.utilities.vault.VaultManager;
 
@@ -47,14 +47,8 @@ public class AmazingTowers extends JavaPlugin {
         this.vaultManager = new VaultManager(this);
         this.vaultManager.load();
         PluginManager pm = Bukkit.getPluginManager();
+        loadSlime(pm);
         pm.registerEvents(new SetupListener(), this);
-        if (pm.isPluginEnabled("SlimeWorldManager")) {
-            SLIME_PLUGIN = (SlimePlugin) pm.getPlugin("SlimeWorldManager");
-            File file = new File(this.getDataFolder(), "slime_worlds");
-            if (!file.exists())
-                file.mkdir();
-            SLIME_PLUGIN.registerLoader("slime_loader", new SlimeFileLoader(file));
-        }
         this.commandManager = new CommandManager(this);
         this.nmsManager = new NMSManager(this);
         this.entityManager = new EntityManager(this);
@@ -82,6 +76,15 @@ public class AmazingTowers extends JavaPlugin {
             return false;
         }
         return true;
+    }
+
+    private void loadSlime(PluginManager pm) {
+        File file = new File(this.getDataFolder(), "slime_worlds");
+        if (!file.exists())
+            file.mkdir();
+        if (pm.isPluginEnabled("SlimeWorldManager")) {
+            SLIME_ADAPTER = new SWMAdapter(file);
+        }
     }
 
     public ConfigurationManager getConfigurationManager() {
@@ -122,6 +125,6 @@ public class AmazingTowers extends JavaPlugin {
             .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
             .create();
 
-    public static SlimePlugin SLIME_PLUGIN;
+    public static SlimeAdapter SLIME_ADAPTER;
 
 }

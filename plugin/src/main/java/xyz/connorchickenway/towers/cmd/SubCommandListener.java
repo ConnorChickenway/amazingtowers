@@ -1,8 +1,5 @@
 package xyz.connorchickenway.towers.cmd;
 
-import com.grinderwolf.swm.api.loaders.SlimeLoader;
-import com.grinderwolf.swm.api.world.SlimeWorld;
-import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -30,7 +27,7 @@ import xyz.connorchickenway.towers.utilities.GameMode;
 import xyz.connorchickenway.towers.utilities.MetadataUtils;
 import xyz.connorchickenway.towers.utilities.StringUtils;
 
-import static xyz.connorchickenway.towers.AmazingTowers.SLIME_PLUGIN;
+import static xyz.connorchickenway.towers.AmazingTowers.SLIME_ADAPTER;
 
 public class SubCommandListener {
 
@@ -267,22 +264,18 @@ public class SubCommandListener {
             world = w != null ? w : BukkitWorldLoader.createWorld(arenaName);
             gameWorld = new BukkitWorldLoader(world);
         } else {
-            if (SLIME_PLUGIN != null) {
+            if (SLIME_ADAPTER != null) {
                 if (Bukkit.getWorld(arenaName) != null) {
                     sender.sendMessage(ChatColor.RED + "There is a world with that name.!");
                     return CommandReason.SOMETHING_ELSE;
                 }
                 try {
-                    SlimeLoader loader = SlimeWorldLoader.getLoader();
-                    SlimeWorld slimeWorld;
-                    SlimePropertyMap slimeProperties = SlimeWorldLoader.getProperties();
-                    if (loader.worldExists(arenaName))
-                        slimeWorld = SLIME_PLUGIN.loadWorld(loader, arenaName, false, slimeProperties);
+                    if (SLIME_ADAPTER.worldExists(arenaName))
+                        SLIME_ADAPTER.loadWorld(arenaName, false);
                     else
-                        slimeWorld = SLIME_PLUGIN.createEmptyWorld(loader, arenaName, false, slimeProperties);
-                    SLIME_PLUGIN.generateWorld(slimeWorld);
+                        SLIME_ADAPTER.createEmptyWorld(arenaName, false);
                     world = Bukkit.getWorld(arenaName);
-                    gameWorld = new SlimeWorldLoader(slimeWorld);
+                    gameWorld = new SlimeWorldLoader(arenaName);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return CommandReason.SOMETHING_ELSE;

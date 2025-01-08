@@ -1,9 +1,13 @@
 allprojects {
     apply plugin: 'java'
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+
     version = 0.1
     group = "xyz.connorchickenway"
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(8)
+        }
+    }
     repositories {
         mavenCentral()
         maven {

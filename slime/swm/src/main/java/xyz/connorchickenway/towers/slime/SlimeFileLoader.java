@@ -1,5 +1,4 @@
-package xyz.connorchickenway.towers.utilities;
-
+package xyz.connorchickenway.towers.slime;
 
 import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
 import com.grinderwolf.swm.api.exceptions.WorldInUseException;
@@ -26,10 +25,8 @@ public class SlimeFileLoader implements SlimeLoader {
     public SlimeFileLoader(File worldDir) {
         this.worldDir = worldDir;
 
-        if (worldDir.exists() && !worldDir.isDirectory()) {
-            Logger.info("A file named '" + worldDir.getName() + "' has been deleted, as this is the name used for the worlds directory.");
+        if (worldDir.exists() && !worldDir.isDirectory())
             worldDir.delete();
-        }
 
         worldDir.mkdirs();
     }
